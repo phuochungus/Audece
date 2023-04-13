@@ -1,15 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
+import { PercentSaleOffVoucher } from './entities/voucher.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class VouchersService {
-  create(createVoucherDto: CreateVoucherDto) {
-    return 'This action adds a new voucher';
+  constructor(
+    @InjectModel(PercentSaleOffVoucher.name)
+    private percentSaleOffVoucherModel: Model<PercentSaleOffVoucher>,
+  ) {}
+
+  async create(
+    createVoucherDto: CreateVoucherDto,
+  ): Promise<PercentSaleOffVoucher> {
+    const createdPercentVoucher = new this.percentSaleOffVoucherModel({
+      ...createVoucherDto,
+    });
+    return createdPercentVoucher.save();
   }
 
-  findAll() {
-    return `This action returns all vouchers`;
+  async findAll() {
+    return await this.percentSaleOffVoucherModel
+      .find({})
+      .sort({ createdAt: -1 });
   }
 
   findOne(id: number) {

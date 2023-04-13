@@ -12,7 +12,7 @@ import { ConfigModule } from '@nestjs/config';
     MongooseModule.forRoot(
       'mongodb+srv://dev:' +
         process.env.MONGO_PASSWORD +
-        '@cluster0.av5bvih.mongodb.net/?retryWrites=true&w=majority',
+        '@cluster0.av5bvih.mongodb.net/Audace_db?retryWrites=true&w=majority',
     ),
   ],
   controllers: [AppController],
