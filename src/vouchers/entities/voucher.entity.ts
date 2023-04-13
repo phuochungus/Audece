@@ -1,1 +1,3 @@
-export class Voucher {}
+export class Voucher {
+  to: Date;
+}
