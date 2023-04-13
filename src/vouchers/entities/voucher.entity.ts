@@ -3,26 +3,28 @@ import { ObjectId } from 'mongoose';
 
 @Schema()
 export class PercentSaleOffVoucher {
-  @Prop()
+  @Prop({ required: true })
   name: string;
 
-  @Prop()
+  @Prop({ required: true })
   start: Date;
 
-  @Prop()
+  @Prop({ required: true })
   end: Date;
 
-  @Prop()
+  @Prop({ required: true })
   code: string;
 
-  @Prop()
+  @Prop({ required: true })
   amountByPercent: number;
 
-  @Prop()
+  @Prop({ required: true })
   condition: string;
 
-  @Prop()
+  @Prop({ required: true })
   appliableCategoryIds: ObjectId[];
 }
 
-export const PercentSaleOffVoucherSchema = SchemaFactory.createForClass(PercentSaleOffVoucher);
+export const PercentSaleOffVoucherSchema = SchemaFactory.createForClass(
+  PercentSaleOffVoucher,
+);
