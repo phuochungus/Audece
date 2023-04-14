@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongoose';
 import { IsDateString, IsNumber, IsString } from 'class-validator';
-import { PercentSaleOffVoucher } from '../entities/voucher.entity';
+import { PercentSaleOffVoucher } from '../schema/voucher.schema';
 import { IsMongoObjectIdString } from 'src/decorators/is-objectId.decorator';
 
 export class CreateVoucherDto implements PercentSaleOffVoucher {
