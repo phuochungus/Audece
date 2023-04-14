@@ -10,12 +10,12 @@ import { SizesModule } from './sizes/sizes.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     VouchersModule,
+    SizesModule,
     MongooseModule.forRoot(
       'mongodb+srv://dev:' +
         process.env.MONGO_PASSWORD +
         '@cluster0.av5bvih.mongodb.net/Audace_db?retryWrites=true&w=majority',
     ),
-    SizesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
