@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
-import { PercentSaleOffVoucher } from './entities/voucher.entity';
+import { PercentSaleOffVoucher } from './schema/voucher.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
@@ -18,7 +18,7 @@ export class VouchersService {
     const createdPercentVoucher = new this.percentSaleOffVoucherModel({
       ...createVoucherDto,
     });
-    return createdPercentVoucher.save();
+    return await createdPercentVoucher.save();
   }
 
   async findAll() {
@@ -28,17 +28,23 @@ export class VouchersService {
   }
 
   async findOne(id: string) {
-    return await this.percentSaleOffVoucherModel.findOne({ _id: id });
+    const voucher = await this.percentSaleOffVoucherModel.findOne({ _id: id });
+    if (voucher) return voucher;
+    throw new NotFoundException();
   }
 
   async update(voucherId: string, updateVoucherDto: UpdateVoucherDto) {
-    await this.percentSaleOffVoucherModel.findOneAndUpdate(
+    const voucher = await this.percentSaleOffVoucherModel.findOneAndUpdate(
       { _id: voucherId },
       updateVoucherDto,
     );
+    if (!voucher) throw new NotFoundException();
   }
 
   async remove(voucherId: string) {
-    return await this.percentSaleOffVoucherModel.deleteOne({ _id: voucherId });
+    const voucher = await this.percentSaleOffVoucherModel.deleteOne({
+      _id: voucherId,
+    });
+    if (!voucher) throw new NotFoundException();
   }
 }
