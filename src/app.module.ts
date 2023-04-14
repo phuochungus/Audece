@@ -4,11 +4,13 @@ import { AppService } from './app.service';
 import { VouchersModule } from './vouchers/vouchers.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { SizesModule } from './sizes/sizes.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     VouchersModule,
+    SizesModule,
     MongooseModule.forRoot(
       'mongodb+srv://dev:' +
         process.env.MONGO_PASSWORD +

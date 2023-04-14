@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Type } from 'class-transformer';
-import { ObjectId, Types } from 'mongoose';
+import { ObjectId } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class PercentSaleOffVoucher {
