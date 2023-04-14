@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { VouchersService } from './vouchers.service';
 import { VouchersController } from './vouchers.controller';
-import { Mongoose } from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   PercentSaleOffVoucher,
   PercentSaleOffVoucherSchema,
-} from './entities/voucher.entity';
+} from './schema/voucher.schema';
 
 @Module({
   imports: [
