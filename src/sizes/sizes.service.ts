@@ -1,26 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSizeDto } from './dto/create-size.dto';
-import { UpdateSizeDto } from './dto/update-size.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Size } from './entities/size.entity';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class SizesService {
+  constructor(
+    @InjectModel(Size.name)
+    private sizeModel: Model<Size>,
+  ) {}
+
   create(createSizeDto: CreateSizeDto) {
-    return 'This action adds a new size';
+    const createdSize = new this.sizeModel({
+      ...createSizeDto,
+    });
+    return createdSize.save();
   }
 
   findAll() {
-    return `This action returns all sizes`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} size`;
-  }
-
-  update(id: number, updateSizeDto: UpdateSizeDto) {
-    return `This action updates a #${id} size`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} size`;
+    return this.sizeModel.find().sort({ lable: -1 });
   }
 }
