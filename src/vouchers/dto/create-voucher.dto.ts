@@ -1,6 +1,6 @@
 import { ObjectId, Types } from 'mongoose';
 import { IsDateString, IsNumber, IsString } from 'class-validator';
-import { IsMongoObjectId as IsMongoObjectIdString } from 'src/decorators/is-objectId.decorator';
+import { IsMongoObjectIdString } from 'src/decorators/is-objectId.decorator';
 import { PercentSaleOffVoucher } from '../entities/voucher.entity';
 import { Type } from 'class-transformer';
 

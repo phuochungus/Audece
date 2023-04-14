@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { VouchersService } from './vouchers.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
+import ParseObjectIdStringPipe from 'src/pipes/parse-objectID-string.pipe';
 
 @Controller('vouchers')
 export class VouchersController {
@@ -17,18 +26,21 @@ export class VouchersController {
     return this.vouchersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.vouchersService.findOne(+id);
+  @Get('/voucher/:voucherId')
+  findOne(@Param('voucherId', ParseObjectIdStringPipe) voucherId: string) {
+    return this.vouchersService.findOne(voucherId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVoucherDto: UpdateVoucherDto) {
-    return this.vouchersService.update(+id, updateVoucherDto);
+  @Patch('/voucher/:voucherId')
+  update(
+    @Param('voucherId', ParseObjectIdStringPipe) voucherId: string,
+    @Body() updateVoucherDto: UpdateVoucherDto,
+  ) {
+    return this.vouchersService.update(voucherId, updateVoucherDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.vouchersService.remove(+id);
+  @Delete('/voucher/:voucherId')
+  remove(@Param('voucherId', ParseObjectIdStringPipe) voucherId: string) {
+    return this.vouchersService.remove(voucherId);
   }
 }

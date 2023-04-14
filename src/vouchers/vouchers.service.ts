@@ -27,15 +27,18 @@ export class VouchersService {
       .sort({ createdAt: -1 });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} voucher`;
+  async findOne(id: string) {
+    return await this.percentSaleOffVoucherModel.findOne({ _id: id });
   }
 
-  update(id: number, updateVoucherDto: UpdateVoucherDto) {
-    return `This action updates a #${id} voucher`;
+  async update(voucherId: string, updateVoucherDto: UpdateVoucherDto) {
+    await this.percentSaleOffVoucherModel.findOneAndUpdate(
+      { _id: voucherId },
+      updateVoucherDto,
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} voucher`;
+  async remove(voucherId: string) {
+    return await this.percentSaleOffVoucherModel.deleteOne({ _id: voucherId });
   }
 }

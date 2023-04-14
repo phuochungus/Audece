@@ -5,18 +5,19 @@ import {
 } from 'class-validator';
 import { isObjectIdOrHexString } from 'mongoose';
 
-export function IsMongoObjectIdString(
+export function IsRGBHexString(
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'IsMongoObjectId',
+      name: 'IsRGBHexString',
       propertyName,
       target: object.constructor,
       options: validationOptions,
       validator: {
         validate(value: any, args: ValidationArguments) {
-          return isObjectIdOrHexString(value);
+          const pattern = new RegExp('^#(?:[0-9a-fA-F]{3}){1,2}$');
+          return pattern.test(value);
         },
 
         defaultMessage(args: ValidationArguments) {
