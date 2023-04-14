@@ -8,8 +8,8 @@ export class CreateSizeDto implements Size {
   @IsNumber()
   heightInCentimeter: number;
 
-  @IsOptional()
   @IsNumber()
+  @IsOptional()
   depthInCentimeter: number | null;
 
   @IsString()

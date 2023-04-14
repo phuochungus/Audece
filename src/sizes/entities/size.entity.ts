@@ -8,9 +8,6 @@ export class Size {
   @Prop({ required: true })
   heightInCentimeter: number;
 
-  @Prop({ required: true, default: null })
-  depthInCentimeter: number | null;
-
   @Prop({ required: true })
   lable: string;
 }
