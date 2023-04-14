@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { VouchersModule } from './vouchers/vouchers.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { SizesModule } from './sizes/sizes.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
         process.env.MONGO_PASSWORD +
         '@cluster0.av5bvih.mongodb.net/Audace_db?retryWrites=true&w=majority',
     ),
+    SizesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
