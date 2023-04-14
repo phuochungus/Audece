@@ -2,10 +2,13 @@ import { Module } from '@nestjs/common';
 import { SizesService } from './sizes.service';
 import { SizesController } from './sizes.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Size } from './entities/size.entity';
+import { Size, SizeSchema } from './entities/size.entity';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Size.name, schema: Size }])],
+  imports: [
+    MongooseModule.forFeature([{ name: Size.name, schema: SizeSchema }]),
+  ],
+
   controllers: [SizesController],
   providers: [SizesService],
 })
