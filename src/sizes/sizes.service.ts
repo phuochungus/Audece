@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSizeDto } from './dto/create-size.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Size } from './entities/size.entity';
+import { Size } from './schemas/size.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
