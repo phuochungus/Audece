@@ -4,8 +4,10 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUrl,
   Max,
   Min,
+  isURL,
 } from 'class-validator';
 import { IsMongoObjectIdString } from 'src/decorators/is-objectId.decorator';
 
@@ -21,7 +23,7 @@ export class CreateProductDto {
   @IsString()
   description: string;
 
-  @IsString()
+  @IsUrl()
   imageURL: string;
 
   @IsOptional()
