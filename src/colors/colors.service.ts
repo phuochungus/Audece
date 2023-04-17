@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateColorDto } from './dto/create-color.dto';
 import { UpdateColorDto } from './dto/update-color.dto';
-import { Color } from './entities/color.entity';
+import { Color } from './schemas/color.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
