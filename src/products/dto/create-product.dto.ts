@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import {
   IsInt,
   IsNumber,
@@ -10,8 +10,10 @@ import {
   isURL,
 } from 'class-validator';
 import { IsMongoObjectIdString } from 'src/decorators/is-objectId.decorator';
+import { Product } from '../schemas/product.schema';
+import { Type } from 'class-transformer';
 
-export class CreateProductDto {
+export class CreateProductDto implements Product {
   @IsString()
   name: string;
 
@@ -28,19 +30,23 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsMongoObjectIdString({ each: true })
-  collectionIds: ObjectId[];
+  @Type(() => mongoose.Types.ObjectId)
+  collectionIds: mongoose.Types.ObjectId[];
 
   @IsOptional()
   @IsMongoObjectIdString({ each: true })
-  categoryIds: ObjectId[];
+  @Type(() => mongoose.Types.ObjectId)
+  categoryIds: mongoose.Types.ObjectId[];
 
   @IsOptional()
   @IsMongoObjectIdString({ each: true })
-  colorIds: ObjectId[];
+  @Type(() => mongoose.Types.ObjectId)
+  colorIds: mongoose.Types.ObjectId[];
 
   @IsOptional()
   @IsMongoObjectIdString({ each: true })
-  sizeIds: ObjectId[];
+  @Type(() => mongoose.Types.ObjectId)
+  sizeIds: mongoose.Types.ObjectId[];
 
   @IsNumber()
   @Min(0)

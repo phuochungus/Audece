@@ -4,7 +4,6 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schemas/product.schema';
 import { Model } from 'mongoose';
-import { makeObjectIdArray } from 'utils/mongo.helper';
 
 @Injectable()
 export class ProductsService {
@@ -16,10 +15,6 @@ export class ProductsService {
   async create(createProductDto: CreateProductDto) {
     const createdProduct = new this.productModel({
       ...createProductDto,
-      colorIds: makeObjectIdArray(createProductDto.colorIds),
-      sizeIds: makeObjectIdArray(createProductDto.sizeIds),
-      collectionIds: makeObjectIdArray(createProductDto.collectionIds),
-      categoryIds: makeObjectIdArray(createProductDto.categoryIds),
     });
     return await createdProduct.save();
   }
