@@ -1,26 +1,100 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Product } from './schemas/product.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ProductsService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  constructor(
+    @InjectModel(Product.name)
+    private productModel: Model<Product>,
+  ) {}
+
+  async create(createProductDto: CreateProductDto) {
+    const createdProduct = new this.productModel({ ...createProductDto });
+    return await createdProduct.save();
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll() {
+    return await this.productModel
+      .find()
+      .select(['-createdAt', '-updatedAt'])
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'colorIds',
+        select: {
+          _id: 0,
+          name: 1,
+          hex: 1,
+        },
+      })
+      .populate({
+        path: 'sizeIds',
+        select: {
+          _id: 0,
+          widthInCentimeter: 1,
+          heightInCentimeter: 1,
+          lable: 1,
+        },
+      });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(objectId: string) {
+    return await this.productModel
+      .findOne({ _id: objectId })
+      .select(['-createdAt', '-updatedAt'])
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'colorIds',
+        select: {
+          _id: 0,
+          name: 1,
+          hex: 1,
+        },
+      })
+      .populate({
+        path: 'sizeIds',
+        select: {
+          _id: 0,
+          widthInCentimeter: 1,
+          heightInCentimeter: 1,
+          lable: 1,
+        },
+      });
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(objectId: string, updateProductDto: UpdateProductDto) {
+    const product = await this.productModel.findOneAndUpdate(
+      { _id: objectId },
+      updateProductDto,
+    );
+    if (!product) throw new NotFoundException();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async findBestSellers() {
+    return await this.productModel
+      .find()
+      .select(['-createdAt', '-updatedAt'])
+      .sort({ createdAt: -1 })
+      .limit(15)
+      .populate({
+        path: 'colorIds',
+        select: {
+          _id: 0,
+          name: 1,
+          hex: 1,
+        },
+      })
+      .populate({
+        path: 'sizeIds',
+        select: {
+          _id: 0,
+          widthInCentimeter: 1,
+          heightInCentimeter: 1,
+          lable: 1,
+        },
+      });
   }
 }
