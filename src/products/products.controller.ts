@@ -9,8 +9,6 @@ import mongoose, { ObjectId } from 'mongoose';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
- 
-
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     return await this.productsService.create(createProductDto);
