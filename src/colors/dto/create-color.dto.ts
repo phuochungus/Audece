@@ -1,9 +1,10 @@
-import { IsString } from 'class-validator';
+import { IsHexColor, IsString } from 'class-validator';
 
 export class CreateColorDto {
   @IsString()
   name: string;
 
   @IsString()
-  hex: `#${string}`;
+  @IsHexColor()
+  hex: string;
 }
