@@ -4,6 +4,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schemas/product.schema';
 import { Model } from 'mongoose';
+import { makeObjectIdArray } from 'utils/mongo.helper';
 
 @Injectable()
 export class ProductsService {
@@ -13,7 +14,13 @@ export class ProductsService {
   ) {}
 
   async create(createProductDto: CreateProductDto) {
-    const createdProduct = new this.productModel({ ...createProductDto });
+    const createdProduct = new this.productModel({
+      ...createProductDto,
+      colorIds: makeObjectIdArray(createProductDto.colorIds),
+      sizeIds: makeObjectIdArray(createProductDto.sizeIds),
+      collectionIds: makeObjectIdArray(createProductDto.collectionIds),
+      categoryIds: makeObjectIdArray(createProductDto.categoryIds),
+    });
     return await createdProduct.save();
   }
 
@@ -96,5 +103,64 @@ export class ProductsService {
           lable: 1,
         },
       });
+  }
+
+  async findBestSaleOff() {
+    return await this.productModel.aggregate([
+      {
+        $project: {
+          createdAt: 0,
+          updatedAt: 0,
+        },
+      },
+      {
+        $addFields: {
+          percentSaleOff: {
+            $subtract: [1, { $divide: ['$saleOffPrice', '$price'] }],
+          },
+        },
+      },
+      { $limit: 15 },
+      {
+        $lookup: {
+          from: 'colors',
+          localField: 'colorIds',
+          foreignField: '_id',
+          pipeline: [
+            {
+              $project: {
+                _id: 0,
+                createdAt: 0,
+                updatedAt: 0,
+              },
+            },
+          ],
+          as: 'colors',
+        },
+      },
+      {
+        $lookup: {
+          from: 'sizes',
+          localField: 'sizeIds',
+          foreignField: '_id',
+          pipeline: [
+            {
+              $project: {
+                _id: 0,
+                createdAt: 0,
+                updatedAt: 0,
+              },
+            },
+          ],
+          as: 'sizes',
+        },
+      },
+      {
+        $project: {
+          colorIds: 0,
+          sizeIds: 0,
+        },
+      },
+    ]);
   }
 }

@@ -1,19 +1,15 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import ParseObjectIdStringPipe from 'src/pipes/parse-objectID-string.pipe';
+import mongoose, { ObjectId } from 'mongoose';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
+
+ 
 
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
@@ -38,8 +34,13 @@ export class ProductsController {
     return this.productsService.update(id, updateProductDto);
   }
 
-  @Get('best-seller')
+  @Get('best-sellers')
   async findBestSellers() {
-    return this.productsService.findBestSellers();
+    return await this.productsService.findBestSellers();
+  }
+
+  @Get('best-sale-off')
+  async findBestSaleOff() {
+    return await this.productsService.findBestSaleOff();
   }
 }
