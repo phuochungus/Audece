@@ -1,5 +1,5 @@
 import { IsNumber, IsOptional, IsString } from 'class-validator';
-import { Size } from '../entities/size.entity';
+import { Size } from '../schemas/size.schema';
 
 export class CreateSizeDto implements Size {
   @IsNumber()
@@ -7,10 +7,6 @@ export class CreateSizeDto implements Size {
 
   @IsNumber()
   heightInCentimeter: number;
-
-  @IsNumber()
-  @IsOptional()
-  depthInCentimeter: number | null;
 
   @IsString()
   lable: string;
