@@ -1,19 +1,13 @@
+import { flatten } from '@nestjs/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ObjectId } from 'mongoose';
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, versionKey: false })
 export class Color {
-
   @Prop({ required: true })
   name: string;
 
   @Prop({ required: true })
-  hex: `#${string}`;
-
-  @Prop({required: true})
-  appliableCategoryIds: ObjectId[];
+  hex: string;
 }
 
-export const ColorSchema = SchemaFactory.createForClass(
-  Color,
-);
+export const ColorSchema = SchemaFactory.createForClass(Color);
