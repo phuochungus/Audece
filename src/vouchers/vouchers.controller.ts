@@ -17,30 +17,32 @@ export class VouchersController {
   constructor(private readonly vouchersService: VouchersService) {}
 
   @Post()
-  create(@Body() createVoucherDto: CreateVoucherDto) {
-    return this.vouchersService.create(createVoucherDto);
+  async create(@Body() createVoucherDto: CreateVoucherDto) {
+    return await this.vouchersService.create(createVoucherDto);
   }
 
   @Get()
-  findAll() {
-    return this.vouchersService.findAll();
+  async findAll() {
+    return await this.vouchersService.findAll();
   }
 
   @Get('/voucher/:voucherId')
-  findOne(@Param('voucherId', ParseObjectIdStringPipe) voucherId: string) {
-    return this.vouchersService.findOne(voucherId);
+  async findOne(
+    @Param('voucherId', ParseObjectIdStringPipe) voucherId: string,
+  ) {
+    return await this.vouchersService.findOne(voucherId);
   }
 
   @Patch('/voucher/:voucherId')
-  update(
+  async update(
     @Param('voucherId', ParseObjectIdStringPipe) voucherId: string,
     @Body() updateVoucherDto: UpdateVoucherDto,
   ) {
-    return this.vouchersService.update(voucherId, updateVoucherDto);
+    return await this.vouchersService.update(voucherId, updateVoucherDto);
   }
 
   @Delete('/voucher/:voucherId')
-  remove(@Param('voucherId', ParseObjectIdStringPipe) voucherId: string) {
+  async remove(@Param('voucherId', ParseObjectIdStringPipe) voucherId: string) {
     return this.vouchersService.remove(voucherId);
   }
 }
