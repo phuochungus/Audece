@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 
 export type ProductDocument = Product & Document;
 
-@Schema({ timestamps: true, versionKey: false, toJSON: { virtuals: true } })
+@Schema({ timestamps: true, versionKey: false })
 export class Product {
   @Prop()
   name: string;
@@ -19,16 +19,16 @@ export class Product {
   imageURL: string;
 
   @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Collection' }] })
-  collectionIds: ObjectId[];
+  collectionIds: mongoose.Types.ObjectId[];
 
   @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Category' }] })
-  categoryIds: ObjectId[];
+  categoryIds: mongoose.Types.ObjectId[];
 
   @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Color' }] })
-  colorIds: ObjectId[];
+  colorIds: mongoose.Types.ObjectId[];
 
   @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Size' }] })
-  sizeIds: ObjectId[];
+  sizeIds: mongoose.Types.ObjectId[];
 
   @Prop()
   price: number;
@@ -38,13 +38,8 @@ export class Product {
 
   @Prop()
   sold: number;
-
-  saleOffByPercent: number;
 }
 
 const ProductSchema = SchemaFactory.createForClass(Product);
-ProductSchema.virtual('saleOffByPercent').get(function (this: ProductDocument) {
-  return 1 - this.saleOffPrice / this.price;
-});
 
 export default ProductSchema;
