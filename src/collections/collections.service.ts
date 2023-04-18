@@ -26,8 +26,11 @@ export class CollectionsService {
       .select(['-createdAt', '-updatedAt', '-productIds']);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} collection`;
+  async findOne(id: string) {
+    return await this.collectionModel
+      .find({ _id: id })
+      .sort({ createdAt: -1 })
+      .populate({ path: 'productIds' });
   }
 
   update(id: number, updateCollectionDto: UpdateCollectionDto) {
