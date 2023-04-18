@@ -20,11 +20,23 @@ export class CategoriesService {
   }
 
   async findAll() {
-    return await this.categoryModel.find({}).sort({ createdAt: -1 });
+    return await this.categoryModel
+      .find({})
+      .select({
+        createdAt: 0,
+        updatedAt: 0,
+      })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'childCategories',
+        select: { createdAt: 0, updatedAt: 0 },
+      });
   }
 
   async findOne(id: string) {
-    return await this.categoryModel.findOne({ _id: id });
+    return await this.categoryModel
+      .findOne({ _id: id })
+      .populate('childCategories');
   }
 
   async update(voucherId: string, updateCategoryDto: UpdateCategoryDto) {
