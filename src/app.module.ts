@@ -8,6 +8,7 @@ import { SizesModule } from './sizes/sizes.module';
 import { ColorsModule } from './colors/colors.module';
 import { ProductsModule } from './products/products.module';
 import { CollectionsModule } from './collections/collections.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CollectionsModule } from './collections/collections.module';
     ),
     ProductsModule,
     CollectionsModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
