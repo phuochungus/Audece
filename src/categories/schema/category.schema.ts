@@ -8,13 +8,12 @@ export class Category {
 
   @Prop({
     type: [{ type: Types.ObjectId, ref: 'Category' }],
-    required: true,
     default: undefined,
   })
   childCategories: Types.ObjectId[] | undefined;
 
-  @Prop({ required: true })
-  imageURL: string;
+  @Prop({ default: undefined })
+  imageURL: string | undefined;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
