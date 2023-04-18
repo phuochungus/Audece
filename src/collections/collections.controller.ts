@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
+import ParseObjectIdStringPipe from 'src/pipes/parse-objectID-string.pipe';
 
 @Controller('collections')
 export class CollectionsController {
@@ -25,9 +27,9 @@ export class CollectionsController {
     return await this.collectionsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.collectionsService.findOne(+id);
+  @Get('/collection/:id')
+  findOne(@Param('id', ParseObjectIdStringPipe) id: string) {
+    return this.collectionsService.findOne(id);
   }
 
   @Patch(':id')
