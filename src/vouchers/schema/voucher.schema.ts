@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class PercentSaleOffVoucher {
@@ -15,7 +15,7 @@ export class PercentSaleOffVoucher {
   @Prop({ required: true })
   code: string;
 
-  @Prop()
+  @Prop({required:true, default:0})
   quantity: number;
 
   @Prop({ required: true })
@@ -24,8 +24,8 @@ export class PercentSaleOffVoucher {
   @Prop({ required: true })
   condition: string;
 
-  @Prop({ required: true })
-  appliableCategoryIds: ObjectId[];
+  @Prop({type: required: true })
+  appliableCategoryIds: Types.ObjectId[];
 }
 
 export const PercentSaleOffVoucherSchema = SchemaFactory.createForClass(
