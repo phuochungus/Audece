@@ -76,13 +76,31 @@ export class ProductsService {
   }
 
   async findBestSellers(queryProductDto: QueryProductDTO) {
-    console.log(queryProductDto.page);
-    return await this.productModel
-      .find()
-      .select(['_id', 'name', 'imageURL', 'price', 'saleOffPrice', 'sold'])
-      .sort({ sold: -1 })
-      .skip(15 * queryProductDto.page)
-      .limit(15);
+    return await this.productModel.aggregate([
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          imageURL: 1,
+          price: 1,
+          saleOffPrice: 1,
+        },
+      },
+      {
+        $addFields: {
+          isFavourite: false,
+        },
+      },
+      {
+        $sort: {
+          sold: -1,
+        },
+      },
+      {
+        $skip: 15 * queryProductDto.page,
+      },
+      { $limit: 15 },
+    ]);
   }
 
   async findBestSaleOff(queryProductDto: QueryProductDTO) {
@@ -91,7 +109,6 @@ export class ProductsService {
         $project: {
           _id: 1,
           name: 1,
-          rating: 1,
           imageURL: 1,
           price: 1,
           saleOffPrice: 1,
@@ -102,6 +119,7 @@ export class ProductsService {
           percentSaleOff: {
             $subtract: [1, { $divide: ['$saleOffPrice', '$price'] }],
           },
+          isFavourite: false,
         },
       },
       {
