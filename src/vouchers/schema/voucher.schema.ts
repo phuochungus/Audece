@@ -15,7 +15,7 @@ export class PercentSaleOffVoucher {
   @Prop({ required: true })
   code: string;
 
-  @Prop({required:true, default:0})
+  @Prop({ required: true, default: 0 })
   quantity: number;
 
   @Prop({ required: true })
@@ -24,7 +24,7 @@ export class PercentSaleOffVoucher {
   @Prop({ required: true })
   condition: string;
 
-  @Prop({type: required: true })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Category' }], required: true })
   appliableCategoryIds: Types.ObjectId[];
 }
 
