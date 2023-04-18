@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import { Size } from '../schemas/size.schema';
 
 export class CreateSizeDto implements Size {

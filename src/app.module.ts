@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { SizesModule } from './sizes/sizes.module';
 import { ColorsModule } from './colors/colors.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ColorsModule } from './colors/colors.module';
         process.env.MONGO_PASSWORD +
         '@cluster0.av5bvih.mongodb.net/Audace_db?retryWrites=true&w=majority',
     ),
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
