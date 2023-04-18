@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import ParseObjectIdStringPipe from 'src/pipes/parse-objectID-string.pipe';
-import mongoose, { ObjectId } from 'mongoose';
+import QueryProductDTO from './dto/query-prodict.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -33,12 +41,12 @@ export class ProductsController {
   }
 
   @Get('best-sellers')
-  async findBestSellers() {
-    return await this.productsService.findBestSellers();
+  async findBestSellers(@Query() queryProductDto: QueryProductDTO) {
+    return await this.productsService.findBestSellers(queryProductDto);
   }
 
   @Get('best-sale-off')
-  async findBestSaleOff() {
-    return await this.productsService.findBestSaleOff();
+  async findBestSaleOff(@Query() queryProductDto: QueryProductDTO) {
+    return await this.productsService.findBestSaleOff(queryProductDto);
   }
 }
