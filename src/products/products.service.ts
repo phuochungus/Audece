@@ -76,6 +76,7 @@ export class ProductsService {
   }
 
   async findBestSellers(queryProductDto: QueryProductDTO) {
+    console.log(queryProductDto.page);
     return await this.productModel
       .find()
       .select(['_id', 'name', 'imageURL', 'price', 'saleOffPrice', 'sold'])
@@ -110,46 +111,6 @@ export class ProductsService {
         $skip: 15 * queryProductDto.page,
       },
       { $limit: 15 },
-      // {
-      //   $lookup: {
-      //     from: 'colors',
-      //     localField: 'colorIds',
-      //     foreignField: '_id',
-      //     pipeline: [
-      //       {
-      //         $project: {
-      //           _id: 0,
-      //           createdAt: 0,
-      //           updatedAt: 0,
-      //         },
-      //       },
-      //     ],
-      //     as: 'colors',
-      //   },
-      // },
-      // {
-      //   $lookup: {
-      //     from: 'sizes',
-      //     localField: 'sizeIds',
-      //     foreignField: '_id',
-      //     pipeline: [
-      //       {
-      //         $project: {
-      //           _id: 0,
-      //           createdAt: 0,
-      //           updatedAt: 0,
-      //         },
-      //       },
-      //     ],
-      //     as: 'sizes',
-      //   },
-      // },
-      // {
-      //   $project: {
-      //     colorIds: 0,
-      //     sizeIds: 0,
-      //   },
-      // },
     ]);
   }
 }
