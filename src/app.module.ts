@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SizesModule } from './sizes/sizes.module';
 import { ColorsModule } from './colors/colors.module';
 import { ProductsModule } from './products/products.module';
+import { CollectionsModule } from './collections/collections.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ProductsModule } from './products/products.module';
         '@cluster0.av5bvih.mongodb.net/Audace_db?retryWrites=true&w=majority',
     ),
     ProductsModule,
+    CollectionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
