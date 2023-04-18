@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ObjectId } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { type } from 'os';
 
 export enum gender {
   male,
@@ -42,7 +43,10 @@ export class User {
       },
     ],
   })
-  vouchers: { voucher: ObjectId; remain: number }[];
+  vouchers: { voucher: mongoose.Types.ObjectId; remain: number }[];
+
+  @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Product' }] })
+  favouriteProducts: mongoose.Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
