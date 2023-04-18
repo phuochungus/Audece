@@ -12,5 +12,5 @@ export default class QueryProductDTO {
   @IsNumber()
   @Type(() => Number)
   @Min(0)
-  page: number;
+  page: number = 0;
 }
