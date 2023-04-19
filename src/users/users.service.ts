@@ -10,7 +10,6 @@ import { compareSync, hashSync } from 'bcrypt';
 import { Model, Types } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
@@ -59,13 +58,13 @@ export class UsersService {
     }
   }
 
-  async findOne(id: string): Promise<User & { _id: Types.ObjectId }> {
-    const user = await this.userModel.findOne({ _id: id }).lean();
+  async findOneOrFail(id: string) {
+    const user = await this.userModel.findOne({ _id: id });
     if (!user) throw new NotFoundException();
     return user;
   }
 
-  private async findOneByEmail(
+  private async findOneByEmailOrFail(
     email: string,
   ): Promise<User & { _id: Types.ObjectId }> {
     if (!isEmail(email)) throw new ConflictException();
@@ -74,7 +73,7 @@ export class UsersService {
     return user;
   }
 
-  private async findOneByUsername(
+  private async findOneByUsernameOrFail(
     username: string,
   ): Promise<User & { _id: Types.ObjectId }> {
     const user = await this.userModel.findOne({ username }).lean();
@@ -82,15 +81,15 @@ export class UsersService {
     return user;
   }
 
-  async findUserIdMatchUsernameAndPassword(
+  async findUserMatchUsernameAndPasswordOrFail(
     username: string,
     password: string,
   ): Promise<{ _id: Types.ObjectId }> {
     let user: User & { _id: Types.ObjectId };
     if (isEmail(username)) {
-      user = await this.findOneByEmail(username);
+      user = await this.findOneByEmailOrFail(username);
     } else {
-      user = await this.findOneByUsername(username);
+      user = await this.findOneByUsernameOrFail(username);
     }
     if (!user) throw new NotFoundException();
     const hashedPassword = user.password;
