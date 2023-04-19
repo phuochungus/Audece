@@ -1,7 +1,12 @@
 import { Types } from 'mongoose';
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsMongoId,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { PercentSaleOffVoucher } from '../schema/voucher.schema';
-import { IsMongoObjectIdString } from 'src/decorators/is-objectId.decorator';
 import { Type } from 'class-transformer';
 
 export class CreateVoucherDto implements PercentSaleOffVoucher {
@@ -27,7 +32,7 @@ export class CreateVoucherDto implements PercentSaleOffVoucher {
   condition: string;
 
   @IsOptional()
-  @IsMongoObjectIdString({ each: true })
+  @IsMongoId({ each: true })
   @Type(() => Types.ObjectId)
   appliableCategoryIds: Types.ObjectId[];
 }

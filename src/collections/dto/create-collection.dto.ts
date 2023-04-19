@@ -1,8 +1,7 @@
 import { Types } from 'mongoose';
 import { Collection } from '../schemas/collection.schema';
-import { IsString, IsUrl } from 'class-validator';
+import { IsMongoId, IsString, IsUrl } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsMongoObjectIdString } from 'src/decorators/is-objectId.decorator';
 
 export class CreateCollectionDto implements Collection {
   @IsString()
@@ -11,7 +10,7 @@ export class CreateCollectionDto implements Collection {
   @IsUrl()
   imageURL: string;
 
-  @IsMongoObjectIdString({ each: true })
+  @IsMongoId({ each: true })
   @Type(() => Types.ObjectId)
   productIds: Types.ObjectId[];
 }
