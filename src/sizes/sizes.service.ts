@@ -11,11 +11,11 @@ export class SizesService {
     private sizeModel: Model<Size>,
   ) {}
 
-  create(createSizeDto: CreateSizeDto) {
+  async create(createSizeDto: CreateSizeDto) {
     const createdSize = new this.sizeModel({
       ...createSizeDto,
     });
-    return createdSize.save();
+    return await createdSize.save();
   }
 
   findAll() {

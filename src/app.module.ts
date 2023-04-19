@@ -10,6 +10,7 @@ import { ProductsModule } from './products/products.module';
 import { CollectionsModule } from './collections/collections.module';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,11 +22,15 @@ import { CategoriesModule } from './categories/categories.module';
       'mongodb+srv://dev:' +
         process.env.MONGO_PASSWORD +
         '@cluster0.av5bvih.mongodb.net/Audace_db?retryWrites=true&w=majority',
+      {
+        autoIndex: true,
+      },
     ),
     ProductsModule,
     CollectionsModule,
     UsersModule,
     CategoriesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsMongoId, IsOptional, IsString, IsUrl } from 'class-validator';
 import { Types } from 'mongoose';
-import { IsMongoObjectIdString } from 'src/decorators/is-objectId.decorator';
 import { Category } from '../schema/category.schema';
 
 export class CreateCategoryDto implements Category {
@@ -9,7 +8,7 @@ export class CreateCategoryDto implements Category {
   name: string;
 
   @IsOptional()
-  @IsMongoObjectIdString({ each: true })
+  @IsMongoId({ each: true })
   @Type(() => Types.ObjectId)
   childCategories: Types.ObjectId[];
 
