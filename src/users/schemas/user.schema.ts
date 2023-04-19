@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { version } from 'os';
 
 export enum gender {
   male,
@@ -21,7 +20,7 @@ export class User {
   @Prop()
   phone: string;
 
-  @Prop({ unique: true })
+  @Prop({ unique: true, sparse: true })
   email: string;
 
   @Prop({ enum: gender, default: undefined })

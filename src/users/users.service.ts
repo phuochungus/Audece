@@ -2,15 +2,15 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { isEmail } from 'class-validator';
-import { hashSync, genSaltSync } from 'bcrypt';
-import { Model } from 'mongoose';
+import { compareSync, hashSync } from 'bcrypt';
+import { Model, Types } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { NotFoundError } from 'rxjs';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
@@ -20,11 +20,6 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    if (isEmail(createUserDto.username)) {
-      createUserDto.email = createUserDto.username;
-      createUserDto.username = undefined;
-    }
-
     const hashedPassword = hashSync(
       createUserDto.password,
       process.env.SECRET_SALT,
@@ -32,10 +27,29 @@ export class UsersService {
 
     createUserDto.password = hashedPassword;
 
-    const createdUser = new this.userModel({ ...createUserDto });
+    let createUserDtoAfterTranform = {};
+
+    if (isEmail(createUserDto.usernameOrEmail)) {
+      createUserDtoAfterTranform = {
+        ...createUserDtoAfterTranform,
+        email: createUserDto.usernameOrEmail,
+      };
+    } else {
+      createUserDtoAfterTranform = {
+        ...createUserDtoAfterTranform,
+        username: createUserDto.usernameOrEmail,
+      };
+    }
+
+    createUserDtoAfterTranform = {
+      ...createUserDtoAfterTranform,
+      password: hashedPassword,
+    };
+
+    const createdUser = new this.userModel({ ...createUserDtoAfterTranform });
 
     try {
-      return await createdUser.save();
+      await createdUser.save();
     } catch (error) {
       if (error.code == 11000)
         throw new ConflictException({
@@ -45,22 +59,44 @@ export class UsersService {
     }
   }
 
-  async findOne(id: string) {
-    const user = await this.userModel.find({ _id: id });
+  async findOne(id: string): Promise<User & { _id: Types.ObjectId }> {
+    const user = await this.userModel.findOne({ _id: id }).lean();
     if (!user) throw new NotFoundException();
     return user;
   }
 
-  async findOneByEmail(email: string) {
+  private async findOneByEmail(
+    email: string,
+  ): Promise<User & { _id: Types.ObjectId }> {
     if (!isEmail(email)) throw new ConflictException();
-    const user = await this.userModel.find({ email });
+    const user = await this.userModel.findOne({ email }).lean();
     if (!user) throw new NotFoundException();
     return user;
   }
 
-  async findOneByUsername(username: string) {
-    const user = await this.userModel.find({ username });
+  private async findOneByUsername(
+    username: string,
+  ): Promise<User & { _id: Types.ObjectId }> {
+    const user = await this.userModel.findOne({ username }).lean();
     if (!user) throw new NotFoundException();
     return user;
+  }
+
+  async findUserIdMatchUsernameAndPassword(
+    username: string,
+    password: string,
+  ): Promise<{ _id: Types.ObjectId }> {
+    let user: User & { _id: Types.ObjectId };
+    if (isEmail(username)) {
+      user = await this.findOneByEmail(username);
+    } else {
+      user = await this.findOneByUsername(username);
+    }
+    if (!user) throw new NotFoundException();
+    const hashedPassword = user.password;
+    if (compareSync(password, hashedPassword)) {
+      return { _id: user._id };
+    }
+    throw new UnauthorizedException();
   }
 }

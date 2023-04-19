@@ -18,13 +18,11 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.create(createUserDto);
+    await this.usersService.create(createUserDto);
   }
 
   @Get('/user/:id')
   findOne(@Param('id', ParseObjectIdStringPipe) id: string) {
     return this.usersService.findOne(id);
   }
-
-  
 }
