@@ -10,10 +10,10 @@ export default class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     super();
   }
 
-  async validate(username: string, password: string) {
+  async validate(usernameOrEmail: string, password: string) {
     const payload =
       await this.usersService.findUserMatchUsernameAndPasswordOrFail(
-        username,
+        usernameOrEmail,
         password,
       );
     return payload;

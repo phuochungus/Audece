@@ -15,6 +15,7 @@ export default class FacebookStrategy extends PassportStrategy(
         process.env.FACEBOOK_REDIRECT_URL ||
         'http://localhost:3000/auth/facebook-callback',
       scope: ['public_profile', 'user_birthday', 'email', 'user_gender'],
+      authType: 'reauthenticate',
       profileFields: [
         'id',
         'displayName',

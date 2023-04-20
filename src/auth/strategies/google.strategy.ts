@@ -19,7 +19,6 @@ export default class GoogleStrategy extends PassportStrategy(
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any) {
-    console.log(accessToken);
     return profile._json;
   }
 }
