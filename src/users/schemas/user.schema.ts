@@ -29,6 +29,9 @@ export class User {
   @Prop()
   birth: Date;
 
+  @Prop()
+  imageURL: string;
+
   @Prop({
     type: [
       {

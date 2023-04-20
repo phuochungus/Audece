@@ -10,6 +10,8 @@ import { compareSync, hashSync } from 'bcrypt';
 import { Model, Types } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
+import UpdateUserDto from './dto/update-user.dto';
+import { extend } from 'lodash';
 
 @Injectable()
 export class UsersService {
@@ -59,7 +61,7 @@ export class UsersService {
   }
 
   async findOneOrFail(id: string) {
-    const user = await this.userModel.findOne({ _id: id });
+    const user = await this.userModel.findOne({ _id: id }).lean();
     if (!user) throw new NotFoundException();
     return user;
   }
@@ -97,5 +99,10 @@ export class UsersService {
       return { _id: user._id };
     }
     throw new UnauthorizedException();
+  }
+
+  async updateUserInfo(userDoc: any, updateUserDto: UpdateUserDto) {
+    extend(userDoc, updateUserDto);
+    await userDoc.save();
   }
 }

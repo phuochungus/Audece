@@ -22,7 +22,7 @@ export default class UpdateUserDto {
   email: string;
 
   @IsOptional()
-  @IsEnum(gender)
+  @IsEnum(gender, { message: 'gender must be male or female' })
   gender: string;
 
   @IsOptional()

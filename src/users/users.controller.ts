@@ -11,8 +11,8 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import JWTAuthGuard from 'src/auth/guards/jwt-auth.guard';
 import ValidateMongoIdPipe from 'src/pipes/validate-mongoId.pipe';
-import { User } from './schemas/user.schema';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
+import UpdateUserDto from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -28,10 +28,9 @@ export class UsersController {
     return this.usersService.findOneOrFail(id);
   }
 
-  @Patch()
+  @Patch('/me')
   @UseGuards(JWTAuthGuard)
-  // @UseInterceptors(UserInterceptor)
-  update(@CurrentUser() user: User) {
-    return user;
+  async update(@CurrentUser() userDoc: any, @Body() updateUserDto: UpdateUserDto) {
+    await this.usersService.updateUserInfo(userDoc, updateUserDto);
   }
 }
