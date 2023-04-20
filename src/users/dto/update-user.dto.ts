@@ -5,6 +5,7 @@ import {
   IsMobilePhone,
   IsOptional,
   IsString,
+  IsUrl,
 } from 'class-validator';
 import { gender } from '../schemas/user.schema';
 
@@ -28,4 +29,8 @@ export default class UpdateUserDto {
   @IsOptional()
   @IsDateString()
   birth: Date;
+
+  @IsOptional()
+  @IsUrl()
+  imageURL: string;
 }
