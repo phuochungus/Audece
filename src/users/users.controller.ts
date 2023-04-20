@@ -4,15 +4,13 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import JWTAuthGuard from 'src/auth/guards/jwt-auth.guard';
-import ValidateMongoIdPipe from 'src/pipes/validate-mongoId.pipe';
-import { User } from './schemas/user.schema';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
+import UpdateUserDto from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -23,15 +21,18 @@ export class UsersController {
     await this.usersService.create(createUserDto);
   }
 
-  @Get('/user/:id')
-  findOne(@Param('id', ValidateMongoIdPipe) id: string) {
-    return this.usersService.findOneOrFail(id);
+  @Get('/me')
+  @UseGuards(JWTAuthGuard)
+  findOne(@CurrentUser() userDoc: any) {
+    return userDoc;
   }
 
-  @Patch()
+  @Patch('/me')
   @UseGuards(JWTAuthGuard)
-  // @UseInterceptors(UserInterceptor)
-  update(@CurrentUser() user: User) {
-    return user;
+  async update(
+    @CurrentUser() userDoc: any,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    await this.usersService.updateUserInfo(userDoc, updateUserDto);
   }
 }

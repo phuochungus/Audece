@@ -6,10 +6,18 @@ export enum gender {
   female,
 }
 
+export enum thirdParty {
+  Google,
+  Facebook,
+}
+
 @Schema({ timestamps: true, versionKey: false })
 export class User {
   @Prop({ unique: true, sparse: true })
-  username: string;
+  username: string | null;
+
+  @Prop({ unique: true, sparse: true })
+  email: string | null;
 
   @Prop()
   fullname: string;
@@ -20,14 +28,14 @@ export class User {
   @Prop()
   phone: string;
 
-  @Prop({ unique: true, sparse: true })
-  email: string;
-
   @Prop({ enum: gender, default: undefined })
   gender: string | undefined;
 
   @Prop()
   birth: Date;
+
+  @Prop()
+  imageURL: string;
 
   @Prop({
     type: [
@@ -51,6 +59,9 @@ export class User {
 
   @Prop()
   address: string;
+
+  @Prop({ enum: thirdParty, default: null })
+  isThirdPartyAccount: thirdParty | null;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

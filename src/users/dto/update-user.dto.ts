@@ -5,6 +5,7 @@ import {
   IsMobilePhone,
   IsOptional,
   IsString,
+  IsUrl,
 } from 'class-validator';
 import { gender } from '../schemas/user.schema';
 
@@ -22,10 +23,14 @@ export default class UpdateUserDto {
   email: string;
 
   @IsOptional()
-  @IsEnum(gender)
+  @IsEnum(gender, { message: 'gender must be male or female' })
   gender: string;
 
   @IsOptional()
   @IsDateString()
   birth: Date;
+
+  @IsOptional()
+  @IsUrl()
+  imageURL: string;
 }
