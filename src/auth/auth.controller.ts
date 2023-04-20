@@ -29,7 +29,7 @@ export class AuthController {
     return this.authService.createAccountOrGenerateAccessTokenIfExist(user);
   }
 
-  @Get('facebook')
+  @Get('/facebook')
   @UseGuards(FacebookAuthGuard)
   loginFacebook() {}
 
