@@ -41,7 +41,8 @@ export class ProductsService {
           heightInCentimeter: 1,
           lable: 1,
         },
-      });
+      })
+      .lean();
   }
 
   async findOne(objectId: string) {
@@ -64,7 +65,8 @@ export class ProductsService {
           heightInCentimeter: 1,
           lable: 1,
         },
-      });
+      })
+      .lean();
   }
 
   async update(objectId: string, updateProductDto: UpdateProductDto) {
@@ -119,7 +121,6 @@ export class ProductsService {
           percentSaleOff: {
             $subtract: [1, { $divide: ['$saleOffPrice', '$price'] }],
           },
-          isFavourite: false,
         },
       },
       {
