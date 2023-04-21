@@ -24,9 +24,16 @@ export default class JWTStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: any) {
-    const { iat, exp, _id } = payload;
+    const { _id } = payload;
     try {
-      return await this.userModel.findById(_id);
+      return await this.userModel
+        .findOne({ _id })
+        .select(['-password'])
+        .populate({
+          path: 'vouchers',
+          populate: { path: 'voucher' },
+          options: { sort: { createdAt: -1 } },
+        });
     } catch (error) {
       if (error instanceof NotFoundException) throw new UnauthorizedException();
       else throw error;

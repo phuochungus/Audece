@@ -51,8 +51,16 @@ export class User {
   })
   vouchers: { voucher: Types.ObjectId; remain: number }[];
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Product' }] })
-  favouriteProducts: Types.ObjectId[];
+  @Prop({
+    type: [
+      {
+        _id: false,
+        product: { type: Types.ObjectId, ref: 'Product' },
+        quantity: Number,
+      },
+    ],
+  })
+  favouriteProducts: { product: Types.ObjectId; quantity: number }[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Order' }] })
   orders: Types.ObjectId[];
