@@ -33,6 +33,12 @@ export default class JWTStrategy extends PassportStrategy(Strategy, 'jwt') {
           path: 'vouchers',
           populate: { path: 'voucher' },
           options: { sort: { createdAt: -1 } },
+        })
+        .populate({
+          path: 'favouriteProducts',
+          populate: {
+            path: 'product',
+          },
         });
     } catch (error) {
       if (error instanceof NotFoundException) throw new UnauthorizedException();
