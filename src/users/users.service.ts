@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -12,12 +13,17 @@ import { User } from './schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import UpdateUserDto from './dto/update-user.dto';
 import { extend } from 'lodash';
+import { UpdateAddressDTO } from 'src/me/dto/update-address.dto';
+import SaveVoucherDTO from 'src/me/dto/save-voucher.dto';
+import { PercentSaleOffVoucher } from 'src/vouchers/schema/voucher.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    @InjectModel(PercentSaleOffVoucher.name)
+    private voucherModel: Model<PercentSaleOffVoucher>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -104,5 +110,30 @@ export class UsersService {
   async updateUserInfo(userDoc: any, updateUserDto: UpdateUserDto) {
     extend(userDoc, updateUserDto);
     await userDoc.save();
+  }
+
+  async updateAddress(userDoc: any, updateAddressDto: UpdateAddressDTO) {
+    extend(userDoc, updateAddressDto);
+    await userDoc.save();
+  }
+
+  async saveVoucher(userDoc: any, saveVoucherDto: SaveVoucherDTO) {
+    const voucherCode = saveVoucherDto.code;
+    let userVouchers: {
+      voucher: any;
+      remain: number;
+    }[] = userDoc.vouchers;
+    for (let index in userVouchers) {
+      if (userVouchers[index].voucher.code == voucherCode) return;
+    }
+
+    const voucher = await this.voucherModel.findOne({ code: voucherCode });
+
+    if (voucher.quantity > 0) {
+      voucher.quantity -= 1;
+      userDoc.vouchers.push({ voucher: voucher._id, remain: 1 });
+      userDoc.save();
+      voucher.save();
+    } else throw new ForbiddenException();
   }
 }
