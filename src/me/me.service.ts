@@ -4,8 +4,5 @@ import { extend } from 'lodash';
 
 @Injectable()
 export class MeService {
-  async updateAddress(userDoc: any, updateAddressDto: UpdateAddressDTO) {
-    extend(userDoc, updateAddressDto);
-    await userDoc.save();
-  }
+
 }

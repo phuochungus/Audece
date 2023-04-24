@@ -12,7 +12,7 @@ export class PercentSaleOffVoucher {
   @Prop({ required: true })
   end: Date;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   code: string;
 
   @Prop({ required: true, default: 0 })
@@ -21,7 +21,7 @@ export class PercentSaleOffVoucher {
   @Prop({ required: true })
   amountByPercent: number;
 
-  @Prop({ required: true })
+  @Prop()
   condition: string;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Category' }], required: true })

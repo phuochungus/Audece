@@ -6,10 +6,17 @@ import { User, UserSchema } from './schemas/user.schema';
 import { AuthModule } from 'src/auth/auth.module';
 import { RouterModule } from '@nestjs/core';
 import { MeModule } from 'src/me/me.module';
+import {
+  PercentSaleOffVoucher,
+  PercentSaleOffVoucherSchema,
+} from 'src/vouchers/schema/voucher.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: PercentSaleOffVoucher.name, schema: PercentSaleOffVoucherSchema },
+    ]),
   ],
   controllers: [UsersController],
   providers: [UsersService],
