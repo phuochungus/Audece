@@ -7,11 +7,15 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 import ObjectIdStringValidationPipe from 'src/pipes/validate-mongoId.pipe';
+import JWTAuthGuard from 'src/auth/guards/jwt-auth.guard';
+import { MarkUserFavouriteProductsInterceptor } from 'src/interceptors/mark-user-favourite-products.interceptor';
 
 @Controller('collections')
 export class CollectionsController {
@@ -28,6 +32,8 @@ export class CollectionsController {
   }
 
   @Get('/collection/:id')
+  @UseGuards(JWTAuthGuard)
+  @UseInterceptors(MarkUserFavouriteProductsInterceptor)
   findOne(@Param('id', ObjectIdStringValidationPipe) id: string) {
     return this.collectionsService.findOne(id);
   }

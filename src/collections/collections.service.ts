@@ -23,14 +23,16 @@ export class CollectionsService {
     return await this.collectionModel
       .find()
       .sort({ createdAt: -1 })
-      .select(['-createdAt', '-updatedAt', '-productIds']);
+      .select(['-createdAt', '-updatedAt', '-productIds'])
+      .lean();
   }
 
   async findOne(id: string) {
     return await this.collectionModel
-      .find({ _id: id })
+      .findOne({ _id: id })
       .sort({ createdAt: -1 })
-      .populate({ path: 'productIds' });
+      .populate({ path: 'productIds' })
+      .lean();
   }
 
   update(id: number, updateCollectionDto: UpdateCollectionDto) {

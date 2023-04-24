@@ -11,6 +11,8 @@ import { CollectionsModule } from './collections/collections.module';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { AuthModule } from './auth/auth.module';
+import { MeModule } from './me/me.module';
+import { RouterModule } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -31,6 +33,19 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     CategoriesModule,
     AuthModule,
+    MeModule,
+    RouterModule.register([
+      {
+        path: '/users',
+        module: UsersModule,
+        children: [
+          {
+            path: '/me',
+            module: MeModule,
+          },
+        ],
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -18,12 +18,25 @@ export class MarkUserFavouriteProductsInterceptor implements NestInterceptor {
       .pipe(map((data) => this.markFavouriteProduct(favouriteProducts, data)));
   }
 
-  private markFavouriteProduct(favouriteProductIds: string[], data: any) {
-    for (let index in data) {
-      const _id: string = data[index]._id.toString();
-      if (favouriteProductIds.includes(_id)) data[index].isFavourite = true;
-      else data[index].isFavourite = false;
+  private markFavouriteProduct(
+    favouriteProductIds: string[],
+    dataResponse: any,
+  ) {
+    if (dataResponse.productIds) {
+      let data = dataResponse.productIds;
+      for (let index in data) {
+        const _id: string = data[index]._id.toString();
+        if (favouriteProductIds.includes(_id)) data[index].isFavourite = true;
+        else data[index].isFavourite = false;
+      }
+    } else {
+      let data = dataResponse;
+      for (let index in data) {
+        const _id: string = data[index]._id.toString();
+        if (favouriteProductIds.includes(_id)) data[index].isFavourite = true;
+        else data[index].isFavourite = false;
+      }
     }
-    return data;
+    return dataResponse;
   }
 }
