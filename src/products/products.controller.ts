@@ -11,7 +11,10 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import ParseObjectIdStringPipe from 'src/pipes/parse-objectID-string.pipe';
-import QueryProductDTO from './dto/query-prodict.dto';
+import QueryProductDTO from './dto/query-product.dto';
+import { GetProductFilterDto } from './dto/filter-product.dto';
+import { Product } from './schemas/product.schema';
+import { filter } from 'rxjs';
 
 @Controller('products')
 export class ProductsController {
@@ -23,8 +26,14 @@ export class ProductsController {
   }
 
   @Get()
-  async findAll() {
-    return await this.productsService.findAll();
+  async findProducts(
+    @Query() filterDto: GetProductFilterDto,
+  ): Promise<Product[]> {
+    if (Object.keys(filterDto).length) {
+      return this.productsService.findProductsWithFilter(filterDto);
+    } else {
+      return await this.productsService.findAll();
+    }
   }
 
   @Get('/product/:id')

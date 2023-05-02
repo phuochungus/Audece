@@ -4,7 +4,8 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schemas/product.schema';
 import { Model } from 'mongoose';
-import QueryProductDTO from './dto/query-prodict.dto';
+import QueryProductDTO from './dto/query-product.dto';
+import { GetProductFilterDto } from './dto/filter-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -42,6 +43,23 @@ export class ProductsService {
           lable: 1,
         },
       });
+  }
+
+  async findProductsWithFilter(
+    filterDto: GetProductFilterDto,
+  ): Promise<Product[]> {
+    const { search } = filterDto;
+
+    let products = this.findAll();
+
+    if (search) {
+      return (await products).filter(
+        (product) =>
+          product.name.includes(search) || product.description.includes(search),
+      );
+    }
+
+    return products;
   }
 
   async findOne(objectId: string) {
