@@ -1,11 +1,5 @@
 import { Type } from 'class-transformer';
-import {
-  IsInt,
-  IsNumber,
-  IsNumberString,
-  IsOptional,
-  Min,
-} from 'class-validator';
+import { IsNumber, IsOptional, Min } from 'class-validator';
 
 export default class QueryProductDTO {
   @IsOptional()
