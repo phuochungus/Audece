@@ -49,12 +49,12 @@ export class CreateProductDto implements Product {
 
   @IsNumber()
   @Min(0)
-  price: number;
+  stablePrice: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
-  saleOffPrice: number;
+  currentPrice: number;
 
   @IsOptional()
   @IsInt()

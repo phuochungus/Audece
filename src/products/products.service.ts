@@ -3,8 +3,9 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schemas/product.schema';
-import { Model } from 'mongoose';
-import QueryProductDTO from './dto/query-prodict.dto';
+import { Model, Types } from 'mongoose';
+import QueryProductDTO from './dto/query-product.dto';
+import QueryProductWithFilterDTO from './dto/query-product-with-filter.dto';
 
 @Injectable()
 export class ProductsService {
@@ -131,5 +132,33 @@ export class ProductsService {
       },
       { $limit: 15 },
     ]);
+  }
+
+  async findWithFilter(queryProductWithFilterDto: QueryProductWithFilterDTO) {
+    let aggregateArray = [
+      {
+        $match: {
+          currentPrice: {
+            $gte: queryProductWithFilterDto.min,
+            $lte: queryProductWithFilterDto.max,
+          },
+        },
+      },
+      ...(queryProductWithFilterDto.categoryId
+        ? [
+            {
+              $match: {
+                categoryIds: {
+                  $in: [new Types.ObjectId('643e6bcef58f3fd02f9e3b70')],
+                },
+              },
+            },
+          ]
+        : []),
+    ];
+
+    console.log(aggregateArray);
+
+    return await this.productModel.aggregate(aggregateArray);
   }
 }

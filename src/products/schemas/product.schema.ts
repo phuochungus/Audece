@@ -31,10 +31,10 @@ export class Product {
   sizeIds: mongoose.Types.ObjectId[];
 
   @Prop()
-  price: number;
+  stablePrice: number;
 
   @Prop()
-  saleOffPrice: number;
+  currentPrice: number;
 
   @Prop()
   sold: number;
