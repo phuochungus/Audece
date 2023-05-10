@@ -149,7 +149,9 @@ export class ProductsService {
             {
               $match: {
                 categoryIds: {
-                  $in: [new Types.ObjectId('643e6bcef58f3fd02f9e3b70')],
+                  $in: [
+                    new Types.ObjectId(queryProductWithFilterDto.categoryId),
+                  ],
                 },
               },
             },
