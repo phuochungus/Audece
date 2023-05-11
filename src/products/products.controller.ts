@@ -8,12 +8,13 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import ObjectIdStringValidationPipe from 'src/pipes/validate-mongoId.pipe';
-import QueryProductDTO from './dto/query-product.dto';
 import JWTAuthGuard from 'src/auth/guards/jwt-auth.guard';
 import { MarkUserFavouriteProductsInterceptor } from 'src/interceptors/mark-user-favourite-products.interceptor';
 import QueryProductWithFilterDTO from './dto/query-product-with-filter.dto';
@@ -37,8 +38,8 @@ export class ProductsController {
   @Get('/product/:id')
   @UseGuards(JWTAuthGuard)
   @UseInterceptors(MarkUserFavouriteProductsInterceptor)
-  findOne(@Param('id', ObjectIdStringValidationPipe) productId: string) {
-    return this.productsService.findOne(productId);
+  async findOne(@Param('id', ObjectIdStringValidationPipe) productId: string) {
+    return await this.productsService.findOne(productId);
   }
 
   @Patch('/product/:id')
@@ -52,15 +53,19 @@ export class ProductsController {
   @Get('best-sellers')
   @UseGuards(JWTAuthGuard)
   @UseInterceptors(MarkUserFavouriteProductsInterceptor)
-  async findBestSellers(@Query() queryProductDto: QueryProductDTO) {
-    return await this.productsService.findBestSellers(queryProductDto);
+  async findBestSellers(
+    @Query('page', new DefaultValuePipe(0), ParseIntPipe) page: number,
+  ) {
+    return await this.productsService.findBestSellers(page);
   }
 
   @Get('best-sale-off')
   @UseGuards(JWTAuthGuard)
   @UseInterceptors(MarkUserFavouriteProductsInterceptor)
-  async findBestSaleOff(@Query() queryProductDto: QueryProductDTO) {
-    return await this.productsService.findBestSaleOff(queryProductDto);
+  async findBestSaleOff(
+    @Query('page', new DefaultValuePipe(0), ParseIntPipe) page: number,
+  ) {
+    return await this.productsService.findBestSaleOff(page);
   }
 
   @Get('search-filter')
@@ -68,7 +73,11 @@ export class ProductsController {
   @UseInterceptors(MarkUserFavouriteProductsInterceptor)
   async getProductByFilter(
     @Body() queryProductWithFilterDto: QueryProductWithFilterDTO,
+    @Query('page', new DefaultValuePipe(0), ParseIntPipe) page: number,
   ) {
-    return await this.productsService.findWithFilter(queryProductWithFilterDto);
+    return await this.productsService.findWithFilter(
+      queryProductWithFilterDto,
+      page,
+    );
   }
 }

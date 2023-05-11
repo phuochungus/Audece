@@ -6,6 +6,8 @@ import {
   PercentSaleOffVoucher,
   PercentSaleOffVoucherSchema,
 } from './schema/voucher.schema';
+import { ProductsModule } from 'src/products/products.module';
+import { OrdersModule } from 'src/orders/orders.module';
 
 @Module({
   imports: [
@@ -15,5 +17,6 @@ import {
   ],
   controllers: [VouchersController],
   providers: [VouchersService],
+  exports: [VouchersService],
 })
 export class VouchersModule {}

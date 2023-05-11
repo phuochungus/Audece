@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoos, { Types } from 'mongoose';
+import { Types, Schema as mongooseSchema } from 'mongoose';
 
 @Schema({ timestamps: true, versionKey: false })
 export class Collection {
@@ -9,8 +9,8 @@ export class Collection {
   @Prop()
   imageURL: string;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Product' }] })
-  productIds: Types.ObjectId[];
+  @Prop({ type: [{ type: mongooseSchema.Types.ObjectId, ref: 'Product' }] })
+  products: Types.ObjectId[];
 }
 
 export const CollectionSchema = SchemaFactory.createForClass(Collection);

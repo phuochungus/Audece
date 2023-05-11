@@ -13,6 +13,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { AuthModule } from './auth/auth.module';
 import { MeModule } from './me/me.module';
 import { RouterModule } from '@nestjs/core';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { RouterModule } from '@nestjs/core';
         ],
       },
     ]),
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

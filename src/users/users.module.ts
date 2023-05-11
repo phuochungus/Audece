@@ -3,20 +3,12 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
-import { AuthModule } from 'src/auth/auth.module';
-import { RouterModule } from '@nestjs/core';
-import { MeModule } from 'src/me/me.module';
-import {
-  PercentSaleOffVoucher,
-  PercentSaleOffVoucherSchema,
-} from 'src/vouchers/schema/voucher.schema';
+import { VouchersModule } from 'src/vouchers/vouchers.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: PercentSaleOffVoucher.name, schema: PercentSaleOffVoucherSchema },
-    ]),
+    VouchersModule,
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [UsersController],
   providers: [UsersService],

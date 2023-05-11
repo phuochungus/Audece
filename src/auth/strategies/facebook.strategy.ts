@@ -12,8 +12,8 @@ export default class FacebookStrategy extends PassportStrategy(
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
       callbackURL:
-        process.env.FACEBOOK_REDIRECT_URL ||
-        'http://localhost:3000/auth/facebook-callback',
+        (process.env.HEROKU_APP_URL || 'http://localhost:3000)') +
+        '/auth/facebook-callback',
       scope: ['public_profile', 'user_birthday', 'email', 'user_gender'],
       authType: 'reauthenticate',
       profileFields: [

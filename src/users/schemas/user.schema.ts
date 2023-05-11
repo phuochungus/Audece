@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Types, Schema as mongooseSchema } from 'mongoose';
+import { PercentSaleOffVoucher } from 'src/vouchers/schema/voucher.schema';
 
 export enum gender {
   male,
@@ -9,6 +10,11 @@ export enum gender {
 export enum thirdParty {
   Google,
   Facebook,
+}
+
+export class UserVoucherInfo {
+  voucher: PercentSaleOffVoucher | Types.ObjectId;
+  remain: number;
 }
 
 @Schema({ timestamps: true, versionKey: false })
@@ -34,7 +40,7 @@ export class User {
   @Prop()
   birth: Date;
 
-  @Prop()
+  @Prop({ default: 'https://i.ibb.co/cFfccTd/User-1-1.png' })
   imageURL: string;
 
   @Prop({
@@ -42,27 +48,37 @@ export class User {
       {
         _id: false,
         voucher: {
-          type: Types.ObjectId,
+          type: mongooseSchema.Types.ObjectId,
           ref: 'PercentSaleOffVoucher',
         },
         remain: Number,
       },
     ],
   })
-  vouchers: { voucher: Types.ObjectId; remain: number }[];
+  vouchers: UserVoucherInfo[];
+
+  @Prop({ type: [{ type: mongooseSchema.Types.ObjectId, ref: 'Product' }] })
+  favouriteProducts: Types.ObjectId[];
 
   @Prop({
     type: [
       {
-        _id: false,
-        product: { type: Types.ObjectId, ref: 'Product' },
+        product: { type: mongooseSchema.Types.ObjectId, ref: 'Product' },
+        size: { type: mongooseSchema.Types.ObjectId, ref: 'Size' },
+        color: { type: mongooseSchema.Types.ObjectId, ref: 'Color' },
         quantity: Number,
+        _id: false,
       },
     ],
   })
-  favouriteProducts: { product: Types.ObjectId; quantity: number }[];
+  purchaseHistory: {
+    product: Types.ObjectId;
+    size: Types.ObjectId;
+    color: Types.ObjectId;
+    quantity: number;
+  }[];
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Order' }] })
+  @Prop({ type: [{ type: mongooseSchema.Types.ObjectId, ref: 'Order' }] })
   orders: Types.ObjectId[];
 
   @Prop()

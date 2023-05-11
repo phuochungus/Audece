@@ -3,15 +3,18 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schemas/product.schema';
-import { Model, Types } from 'mongoose';
-import QueryProductDTO from './dto/query-product.dto';
+import { FlattenMaps, Model, Types } from 'mongoose';
 import QueryProductWithFilterDTO from './dto/query-product-with-filter.dto';
+
+export type ProductLeanDocument = FlattenMaps<Product> & {
+  _id: Types.ObjectId;
+};
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(Product.name)
-    private productModel: Model<Product>,
+    public readonly productModel: Model<Product>,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
@@ -27,17 +30,17 @@ export class ProductsService {
       .select(['-createdAt', '-updatedAt'])
       .sort({ createdAt: -1 })
       .populate({
-        path: 'colorIds',
+        path: 'colors',
         select: {
-          _id: 0,
+          _id: 1,
           name: 1,
           hex: 1,
         },
       })
       .populate({
-        path: 'sizeIds',
+        path: 'sizes',
         select: {
-          _id: 0,
+          _id: 1,
           widthInCentimeter: 1,
           heightInCentimeter: 1,
           lable: 1,
@@ -47,11 +50,11 @@ export class ProductsService {
   }
 
   async findOne(objectId: string) {
-    return await this.productModel
+    const product = await this.productModel
       .findOne({ _id: objectId })
       .select(['-createdAt', '-updatedAt'])
       .populate({
-        path: 'colorIds',
+        path: 'colors',
         select: {
           _id: 0,
           name: 1,
@@ -59,7 +62,7 @@ export class ProductsService {
         },
       })
       .populate({
-        path: 'sizeIds',
+        path: 'sizes',
         select: {
           _id: 0,
           widthInCentimeter: 1,
@@ -68,6 +71,8 @@ export class ProductsService {
         },
       })
       .lean();
+    if (product) return product;
+    throw new NotFoundException();
   }
 
   async update(objectId: string, updateProductDto: UpdateProductDto) {
@@ -78,7 +83,7 @@ export class ProductsService {
     if (!product) throw new NotFoundException();
   }
 
-  async findBestSellers(queryProductDto: QueryProductDTO) {
+  async findBestSellers(page: number) {
     return await this.productModel.aggregate([
       {
         $project: {
@@ -100,13 +105,13 @@ export class ProductsService {
         },
       },
       {
-        $skip: 15 * queryProductDto.page,
+        $skip: 15 * page,
       },
       { $limit: 15 },
     ]);
   }
 
-  async findBestSaleOff(queryProductDto: QueryProductDTO) {
+  async findBestSaleOff(page: number) {
     return await this.productModel.aggregate([
       {
         $project: {
@@ -128,13 +133,16 @@ export class ProductsService {
         $sort: { pecentSaleOff: -1 },
       },
       {
-        $skip: 15 * queryProductDto.page,
+        $skip: 15 * page,
       },
       { $limit: 15 },
     ]);
   }
 
-  async findWithFilter(queryProductWithFilterDto: QueryProductWithFilterDTO) {
+  async findWithFilter(
+    queryProductWithFilterDto: QueryProductWithFilterDTO,
+    page: number,
+  ) {
     let aggregateArray = [
       {
         $match: {
@@ -157,10 +165,24 @@ export class ProductsService {
             },
           ]
         : []),
+
+      {
+        $skip: 15 * page,
+      },
+      { $limit: 15 },
     ];
-
-    console.log(aggregateArray);
-
     return await this.productModel.aggregate(aggregateArray);
+  }
+
+  async populateProduct(
+    id: string,
+    quantity: number,
+  ): Promise<{
+    product: ProductLeanDocument;
+    quantity: number;
+  }> {
+    const product = await this.productModel.findOne({ _id: id }).lean();
+
+    return { product, quantity };
   }
 }

@@ -12,8 +12,8 @@ export default class GoogleStrategy extends PassportStrategy(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL:
-        process.env.GOOGLE_REDIRECT_URL ||
-        'http://localhost:3000/auth/google-callback',
+        (process.env.HEROKU_APP_URL || 'http://localhost:3000)') +
+        '/auth/google-callback',
       scope: ['email', 'profile'],
     });
   }

@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import {
   IsDateString,
   IsMongoId,
@@ -6,10 +5,8 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { PercentSaleOffVoucher } from '../schema/voucher.schema';
-import { Type } from 'class-transformer';
 
-export class CreateVoucherDto implements PercentSaleOffVoucher {
+export class CreateVoucherDto {
   @IsString()
   name: string;
 
@@ -28,11 +25,7 @@ export class CreateVoucherDto implements PercentSaleOffVoucher {
   @IsNumber()
   amountByPercent: number;
 
-  @IsString()
-  condition: string;
-
   @IsOptional()
   @IsMongoId({ each: true })
-  @Type(() => Types.ObjectId)
-  appliableCategoryIds: Types.ObjectId[];
+  appliableCategories: string[];
 }

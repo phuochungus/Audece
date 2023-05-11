@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -8,22 +9,23 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { isEmail } from 'class-validator';
 import { compareSync, hashSync } from 'bcrypt';
-import { Model, Types } from 'mongoose';
+import { FlattenMaps, Model, Types } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import UpdateUserDto from './dto/update-user.dto';
 import { extend } from 'lodash';
 import { UpdateAddressDTO } from 'src/me/dto/update-address.dto';
 import SaveVoucherDTO from 'src/me/dto/save-voucher.dto';
+import { VouchersService } from 'src/vouchers/vouchers.service';
+import { UserDocument } from 'src/auth/strategies/jwt.strategy';
 import { PercentSaleOffVoucher } from 'src/vouchers/schema/voucher.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name)
-    private userModel: Model<User>,
-    @InjectModel(PercentSaleOffVoucher.name)
-    private voucherModel: Model<PercentSaleOffVoucher>,
+    public readonly userModel: Model<User>,
+    private readonly vouchersService: VouchersService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -74,7 +76,7 @@ export class UsersService {
 
   private async findOneByEmailOrFail(
     email: string,
-  ): Promise<User & { _id: Types.ObjectId }> {
+  ): Promise<FlattenMaps<User> & { _id: Types.ObjectId }> {
     if (!isEmail(email)) throw new ConflictException();
     const user = await this.userModel.findOne({ email }).lean();
     if (!user) throw new NotFoundException();
@@ -83,7 +85,7 @@ export class UsersService {
 
   private async findOneByUsernameOrFail(
     username: string,
-  ): Promise<User & { _id: Types.ObjectId }> {
+  ): Promise<FlattenMaps<User> & { _id: Types.ObjectId }> {
     const user = await this.userModel.findOne({ username }).lean();
     if (!user) throw new NotFoundException();
     return user;
@@ -93,7 +95,8 @@ export class UsersService {
     username: string,
     password: string,
   ): Promise<{ _id: Types.ObjectId }> {
-    let user: User & { _id: Types.ObjectId };
+    let user: FlattenMaps<User> & { _id: Types.ObjectId };
+
     if (isEmail(username)) {
       user = await this.findOneByEmailOrFail(username);
     } else {
@@ -101,39 +104,60 @@ export class UsersService {
     }
     if (!user) throw new NotFoundException();
     const hashedPassword = user.password;
+
     if (compareSync(password, hashedPassword)) {
       return { _id: user._id };
     }
     throw new UnauthorizedException();
   }
 
-  async updateUserInfo(userDoc: any, updateUserDto: UpdateUserDto) {
-    extend(userDoc, updateUserDto);
-    await userDoc.save();
+  async updateUserInfo(
+    userDocument: UserDocument,
+    updateUserDto: UpdateUserDto,
+  ) {
+    extend(userDocument, updateUserDto);
+    await userDocument.save();
   }
 
-  async updateAddress(userDoc: any, updateAddressDto: UpdateAddressDTO) {
-    extend(userDoc, updateAddressDto);
-    await userDoc.save();
+  async updateAddress(
+    userDocument: UserDocument,
+    updateAddressDto: UpdateAddressDTO,
+  ) {
+    extend(userDocument, updateAddressDto);
+    await userDocument.save();
   }
 
-  async saveVoucher(userDoc: any, saveVoucherDto: SaveVoucherDTO) {
+  async saveVoucher(
+    userDocument: UserDocument,
+    saveVoucherDto: SaveVoucherDTO,
+  ) {
     const voucherCode = saveVoucherDto.code;
-    let userVouchers: {
-      voucher: any;
-      remain: number;
-    }[] = userDoc.vouchers;
-    for (let index in userVouchers) {
-      if (userVouchers[index].voucher.code == voucherCode) return;
-    }
 
-    const voucher = await this.voucherModel.findOne({ code: voucherCode });
+    await userDocument.populate({
+      path: 'vouchers',
+      populate: { path: 'voucher' },
+    });
+
+    const voucher =
+      await this.vouchersService.percentSaleOffVoucherModel.findOne({
+        code: voucherCode,
+      });
+
+    if (
+      userDocument.vouchers.filter(
+        (e) => (e.voucher as PercentSaleOffVoucher).code == voucherCode,
+      ).length != 0
+    )
+      throw new ConflictException('Voucher has already saved');
 
     if (voucher.quantity > 0) {
       voucher.quantity -= 1;
-      userDoc.vouchers.push({ voucher: voucher._id, remain: 1 });
-      userDoc.save();
-      voucher.save();
+      userDocument.vouchers.unshift({ voucher: voucher._id, remain: 1 });
+      try {
+        await Promise.all([userDocument.save(), voucher.save()]);
+      } catch (error) {
+        throw new BadGatewayException();
+      }
     } else throw new ForbiddenException();
   }
 }

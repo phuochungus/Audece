@@ -26,23 +26,23 @@ export class VouchersController {
     return await this.vouchersService.findAll();
   }
 
-  @Get('/voucher/:voucherId')
+  @Get('/voucher/:id')
   async findOne(
-    @Param('voucherId', ObjectIdStringValidationPipe) voucherId: string,
+    @Param('id', ObjectIdStringValidationPipe) voucherId: string,
   ) {
     return await this.vouchersService.findOne(voucherId);
   }
 
-  @Patch('/voucher/:voucherId')
+  @Patch('/voucher/:id')
   async update(
-    @Param('voucherId', ObjectIdStringValidationPipe) voucherId: string,
+    @Param('id', ObjectIdStringValidationPipe) voucherId: string,
     @Body() updateVoucherDto: UpdateVoucherDto,
   ) {
     return await this.vouchersService.update(voucherId, updateVoucherDto);
   }
 
-  @Delete('/voucher/:voucherId')
-  async remove(@Param('voucherId', ObjectIdStringValidationPipe) voucherId: string) {
+  @Delete('/voucher/:id')
+  async remove(@Param('id', ObjectIdStringValidationPipe) voucherId: string) {
     return this.vouchersService.remove(voucherId);
   }
 }

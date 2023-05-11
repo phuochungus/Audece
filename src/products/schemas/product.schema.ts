@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ObjectId, Document } from 'mongoose';
-import * as mongoose from 'mongoose';
+import { Document, Types, Schema as mongooseSchema } from 'mongoose';
 
 export type ProductDocument = Product & Document;
 
@@ -18,17 +17,17 @@ export class Product {
   @Prop()
   imageURL: string;
 
-  @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Collection' }] })
-  collectionIds: mongoose.Types.ObjectId[];
+  @Prop({ type: [{ type: mongooseSchema.Types.ObjectId, ref: 'Collection' }] })
+  collections: Types.ObjectId[];
 
-  @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Category' }] })
-  categoryIds: mongoose.Types.ObjectId[];
+  @Prop({ type: [{ type: mongooseSchema.Types.ObjectId, ref: 'Category' }] })
+  categories: Types.ObjectId[];
 
-  @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Color' }] })
-  colorIds: mongoose.Types.ObjectId[];
+  @Prop({ type: [{ type: mongooseSchema.Types.ObjectId, ref: 'Color' }] })
+  colors: Types.ObjectId[];
 
-  @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Size' }] })
-  sizeIds: mongoose.Types.ObjectId[];
+  @Prop({ type: [{ type: mongooseSchema.Types.ObjectId, ref: 'Size' }] })
+  sizes: Types.ObjectId[];
 
   @Prop()
   stablePrice: number;

@@ -1,4 +1,3 @@
-import mongoose, { ObjectId } from 'mongoose';
 import {
   IsInt,
   IsMongoId,
@@ -9,10 +8,8 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { Product } from '../schemas/product.schema';
-import { Type } from 'class-transformer';
 
-export class CreateProductDto implements Product {
+export class CreateProductDto {
   @IsString()
   name: string;
 
@@ -29,23 +26,19 @@ export class CreateProductDto implements Product {
 
   @IsOptional()
   @IsMongoId({ each: true })
-  @Type(() => mongoose.Types.ObjectId)
-  collectionIds: mongoose.Types.ObjectId[];
+  collections: string[];
 
   @IsOptional()
   @IsMongoId({ each: true })
-  @Type(() => mongoose.Types.ObjectId)
-  categoryIds: mongoose.Types.ObjectId[];
+  categories: string[];
 
   @IsOptional()
   @IsMongoId({ each: true })
-  @Type(() => mongoose.Types.ObjectId)
-  colorIds: mongoose.Types.ObjectId[];
+  colors: string[];
 
   @IsOptional()
   @IsMongoId({ each: true })
-  @Type(() => mongoose.Types.ObjectId)
-  sizeIds: mongoose.Types.ObjectId[];
+  sizes: string[];
 
   @IsNumber()
   @Min(0)

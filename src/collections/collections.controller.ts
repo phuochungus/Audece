@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseUUIDPipe,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -36,18 +35,5 @@ export class CollectionsController {
   @UseInterceptors(MarkUserFavouriteProductsInterceptor)
   findOne(@Param('id', ObjectIdStringValidationPipe) id: string) {
     return this.collectionsService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateCollectionDto: UpdateCollectionDto,
-  ) {
-    return this.collectionsService.update(+id, updateCollectionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.collectionsService.remove(+id);
   }
 }

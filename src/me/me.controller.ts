@@ -1,4 +1,15 @@
-import { Controller, Get, Body, Patch, UseGuards, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  UseGuards,
+  Post,
+  Query,
+  ParseIntPipe,
+  DefaultValuePipe,
+  Delete,
+} from '@nestjs/common';
 import { MeService } from './me.service';
 import JWTAuthGuard from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
@@ -6,6 +17,8 @@ import UpdateUserDto from 'src/users/dto/update-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { UpdateAddressDTO } from './dto/update-address.dto';
 import SaveVoucherDTO from './dto/save-voucher.dto';
+import { UserDocument } from 'src/auth/strategies/jwt.strategy';
+import ValidateMongoIdPipe from 'src/pipes/validate-mongoId.pipe';
 
 @Controller()
 @UseGuards(JWTAuthGuard)
@@ -15,32 +28,70 @@ export class MeController {
     private usersService: UsersService,
   ) {}
 
-  @Get()
-  findOne(@CurrentUser() userDoc: any) {
-    return userDoc;
+  @Get('/profile')
+  async showProfile(@CurrentUser() userDocument: UserDocument) {
+    return userDocument;
+  }
+
+  @Get('/vouchers')
+  async showVouchers(@CurrentUser() userDocument: UserDocument) {
+    return await this.meService.showVouchers(userDocument);
+  }
+
+  @Get('/orders')
+  async showOrders(
+    @CurrentUser() userDocument: UserDocument,
+    @Query('page', new DefaultValuePipe(0), ParseIntPipe) page: number,
+  ) {
+    return await this.meService.showOrders(userDocument, page);
+  }
+
+  @Get('/history')
+  async showHistoryItem(@CurrentUser() userDocument: UserDocument) {
+    return await this.meService.showHistory(userDocument);
   }
 
   @Patch()
   async update(
-    @CurrentUser() userDoc: any,
+    @CurrentUser() userDocument: UserDocument,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    await this.usersService.updateUserInfo(userDoc, updateUserDto);
+    await this.usersService.updateUserInfo(userDocument, updateUserDto);
   }
 
   @Patch('/address')
   async updateAddress(
-    @CurrentUser() userDoc,
+    @CurrentUser() userDocument: UserDocument,
     @Body() updateAddressDTO: UpdateAddressDTO,
   ) {
-    await this.usersService.updateAddress(userDoc, updateAddressDTO);
+    await this.usersService.updateAddress(userDocument, updateAddressDTO);
   }
 
   @Post('/save_voucher')
   async saveVoucher(
-    @CurrentUser() userDoc,
+    @CurrentUser() userDocument: UserDocument,
     @Body() saveVoucherDto: SaveVoucherDTO,
   ) {
-    await this.usersService.saveVoucher(userDoc, saveVoucherDto);
+    await this.usersService.saveVoucher(userDocument, saveVoucherDto);
+  }
+
+  @Get('/favourites')
+  async showFavourites(@CurrentUser() userDocument: UserDocument) {
+    return await this.meService.showFavourite(userDocument);
+  }
+  @Post('/favourites')
+  async saveToFavourites(
+    @CurrentUser() userDocument: UserDocument,
+    @Body('id', ValidateMongoIdPipe) id: string,
+  ) {
+    await this.meService.saveFavourites(userDocument, id);
+  }
+
+  @Delete('/favourites')
+  async removeFromFavourites(
+    @CurrentUser() userDocument: UserDocument,
+    @Body('id', ValidateMongoIdPipe) id: string,
+  ) {
+    await this.meService.removeFromFavourite(userDocument, id);
   }
 }

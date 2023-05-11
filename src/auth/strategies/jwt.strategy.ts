@@ -3,19 +3,18 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { PassportStrategy } from '@nestjs/passport';
-import { Model } from 'mongoose';
+import { Types, Document } from 'mongoose';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { User } from 'src/users/schemas/user.schema';
 import { UsersService } from 'src/users/users.service';
 
+export type UserDocument = Document<unknown, {}, User> &
+  Omit<User & { _id: Types.ObjectId }, never>;
+
 @Injectable()
 export default class JWTStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(
-    @InjectModel(User.name)
-    private userModel: Model<User>,
-  ) {
+  constructor(private readonly usersService: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: true,
@@ -23,23 +22,10 @@ export default class JWTStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: any): Promise<UserDocument> {
     const { _id } = payload;
     try {
-      return await this.userModel
-        .findOne({ _id })
-        .select(['-password'])
-        .populate({
-          path: 'vouchers',
-          populate: { path: 'voucher' },
-          options: { sort: { createdAt: -1 } },
-        })
-        .populate({
-          path: 'favouriteProducts',
-          populate: {
-            path: 'product',
-          },
-        });
+      return await this.usersService.userModel.findOne({ _id });
     } catch (error) {
       if (error instanceof NotFoundException) throw new UnauthorizedException();
       else throw error;

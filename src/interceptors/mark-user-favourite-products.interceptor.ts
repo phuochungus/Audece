@@ -10,9 +10,10 @@ import { map } from 'rxjs';
 export class MarkUserFavouriteProductsInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler) {
     let req = context.switchToHttp().getRequest();
-    const favouriteProducts = req.user.favouriteProducts.map((e) =>
-      e.product._id.toString(),
-    );
+    const favouriteProducts = req.user.favouriteProducts.map((e) => {
+      return e.product;
+    });
+
     return next
       .handle()
       .pipe(map((data) => this.markFavouriteProduct(favouriteProducts, data)));
@@ -22,21 +23,18 @@ export class MarkUserFavouriteProductsInterceptor implements NestInterceptor {
     favouriteProductIds: string[],
     dataResponse: any,
   ) {
-    if (dataResponse.productIds) {
-      let data = dataResponse.productIds;
-      for (let index in data) {
-        const _id: string = data[index]._id.toString();
-        if (favouriteProductIds.includes(_id)) data[index].isFavourite = true;
-        else data[index].isFavourite = false;
-      }
+    if (dataResponse.constructor === Array) {
+      for (let index in dataResponse)
+        this.checkAndMarkFavourite(dataResponse[index], favouriteProductIds);
     } else {
-      let data = dataResponse;
-      for (let index in data) {
-        const _id: string = data[index]._id.toString();
-        if (favouriteProductIds.includes(_id)) data[index].isFavourite = true;
-        else data[index].isFavourite = false;
-      }
+      this.checkAndMarkFavourite(dataResponse, favouriteProductIds);
     }
     return dataResponse;
+  }
+
+  private checkAndMarkFavourite(productItem: any, favouriteProductIds: any[]) {
+    const _id: string = productItem._id.toString();
+    if (favouriteProductIds.includes(_id)) productItem.isFavourite = true;
+    else productItem.isFavourite = false;
   }
 }
