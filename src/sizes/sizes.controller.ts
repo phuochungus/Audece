@@ -1,12 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { SizesService } from './sizes.service';
 import { CreateSizeDto } from './dto/create-size.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('sizes')
 @Controller('sizes')
 export class SizesController {
   constructor(private readonly sizesService: SizesService) {}

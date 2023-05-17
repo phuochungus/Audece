@@ -5,7 +5,7 @@ import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export default class LocalStrategy extends PassportStrategy(Strategy, 'local') {
-  constructor(private usersService: UsersService) {
+  constructor(private readonly usersService: UsersService) {
     super();
   }
 

@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export default class QueryProductWithFilterDTO {
   @IsString()
@@ -6,10 +6,10 @@ export default class QueryProductWithFilterDTO {
   categoryId?: string;
 
   @IsNumber()
-  @Min(45000)
+  @Min(0)
   min: number;
 
   @IsNumber()
-  @Max(10000000)
+  @Min(0)
   max: number;
 }

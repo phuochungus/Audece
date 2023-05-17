@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { PercentSaleOffVoucher } from './schema/voucher.schema';
@@ -20,16 +24,22 @@ export class VouchersService {
     public readonly percentSaleOffVoucherModel: Model<PercentSaleOffVoucher>,
   ) {}
 
-  async create(
-    createVoucherDto: CreateVoucherDto,
-  ): Promise<PercentSaleOffVoucher> {
-    const createdPercentVoucher = new this.percentSaleOffVoucherModel({
-      ...createVoucherDto,
-    });
-    return await createdPercentVoucher.save();
+  async create(createVoucherDto: CreateVoucherDto) {
+    try {
+      const createdPercentVoucher = new this.percentSaleOffVoucherModel({
+        ...createVoucherDto,
+      });
+      await createdPercentVoucher.save();
+    } catch (error) {
+      if (error.code == 11000)
+        throw new ConflictException('code already exist');
+      throw error;
+    }
   }
 
-  async findAll() {
+  async findAll(): Promise<
+    (FlattenMaps<PercentSaleOffVoucher> & { _id: Types.ObjectId })[]
+  > {
     return await this.percentSaleOffVoucherModel
       .find({})
       .lean()

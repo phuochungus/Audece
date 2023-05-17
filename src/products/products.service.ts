@@ -156,7 +156,7 @@ export class ProductsService {
         ? [
             {
               $match: {
-                categoryIds: {
+                categories: {
                   $in: [
                     new Types.ObjectId(queryProductWithFilterDto.categoryId),
                   ],

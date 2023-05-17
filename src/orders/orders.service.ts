@@ -8,11 +8,8 @@ import { Order } from './schemas/order.schema';
 import { VouchersService } from 'src/vouchers/vouchers.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types, Document } from 'mongoose';
-import { ProductsService } from 'src/products/products.service';
-import { UsersService } from 'src/users/users.service';
 import { UserDocument } from 'src/auth/strategies/jwt.strategy';
 import { extend } from 'lodash';
-import { UserVoucherInfo } from 'src/users/schemas/user.schema';
 import { PercentSaleOffVoucher } from 'src/vouchers/schema/voucher.schema';
 
 export type OrderDocument = Document<unknown, {}, Order> &
@@ -27,8 +24,6 @@ export type OrderDocument = Document<unknown, {}, Order> &
 export class OrdersService {
   constructor(
     private readonly voucherService: VouchersService,
-    private readonly productsService: ProductsService,
-    private readonly usersService: UsersService,
     @InjectModel(Order.name)
     public orderModel: Model<Order>,
   ) {}

@@ -18,6 +18,7 @@ import ObjectIdStringValidationPipe from 'src/pipes/validate-mongoId.pipe';
 import JWTAuthGuard from 'src/auth/guards/jwt-auth.guard';
 import { MarkUserFavouriteProductsInterceptor } from 'src/interceptors/mark-user-favourite-products.interceptor';
 import QueryProductWithFilterDTO from './dto/query-product-with-filter.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductsController {
@@ -51,6 +52,8 @@ export class ProductsController {
   }
 
   @Get('best-sellers')
+  @ApiTags('products')
+  @ApiBearerAuth()
   @UseGuards(JWTAuthGuard)
   @UseInterceptors(MarkUserFavouriteProductsInterceptor)
   async findBestSellers(
@@ -59,7 +62,9 @@ export class ProductsController {
     return await this.productsService.findBestSellers(page);
   }
 
+  @ApiTags('products')
   @Get('best-sale-off')
+  @ApiBearerAuth()
   @UseGuards(JWTAuthGuard)
   @UseInterceptors(MarkUserFavouriteProductsInterceptor)
   async findBestSaleOff(
@@ -69,6 +74,8 @@ export class ProductsController {
   }
 
   @Get('search-filter')
+  @ApiTags('products')
+  @ApiBearerAuth()
   @UseGuards(JWTAuthGuard)
   @UseInterceptors(MarkUserFavouriteProductsInterceptor)
   async getProductByFilter(

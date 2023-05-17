@@ -74,20 +74,18 @@ export class UsersService {
     return user;
   }
 
-  private async findOneByEmailOrFail(
+  private async findOneByEmail(
     email: string,
   ): Promise<FlattenMaps<User> & { _id: Types.ObjectId }> {
     if (!isEmail(email)) throw new ConflictException();
     const user = await this.userModel.findOne({ email }).lean();
-    if (!user) throw new NotFoundException();
     return user;
   }
 
-  private async findOneByUsernameOrFail(
+  private async findOneByUsername(
     username: string,
   ): Promise<FlattenMaps<User> & { _id: Types.ObjectId }> {
     const user = await this.userModel.findOne({ username }).lean();
-    if (!user) throw new NotFoundException();
     return user;
   }
 
@@ -98,13 +96,12 @@ export class UsersService {
     let user: FlattenMaps<User> & { _id: Types.ObjectId };
 
     if (isEmail(username)) {
-      user = await this.findOneByEmailOrFail(username);
+      user = await this.findOneByEmail(username);
     } else {
-      user = await this.findOneByUsernameOrFail(username);
+      user = await this.findOneByUsername(username);
     }
     if (!user) throw new NotFoundException();
     const hashedPassword = user.password;
-
     if (compareSync(password, hashedPassword)) {
       return { _id: user._id };
     }

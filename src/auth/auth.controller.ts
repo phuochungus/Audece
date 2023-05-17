@@ -5,14 +5,20 @@ import { GoogleAuthGuard } from './guards/google-oauth2.guard';
 import { FacebookAuthGuard } from './guards/facebook-oauth2.guard';
 import UserGoogleProfileDTO from './dto/user-google-profile.dto';
 import UserFacebookProfileDTO from './dto/user-facebook-profile.dto';
+import { ApiBody, ApiTags, ApiCreatedResponse } from '@nestjs/swagger';
+import { LoginDTO } from './dto/login.dto';
+import { tokenDTO } from './dto/token.dto';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('/local')
+  @ApiBody({ type: LoginDTO })
   @UseGuards(LocalAuthGuard)
-  login(@Request() req) {
+  @ApiCreatedResponse({ type: tokenDTO })
+  @Post('/local')
+  login(@Request() req): tokenDTO {
     return {
       accessToken: this.authService.generateAccessTokenString(req.user._id),
     };
@@ -24,7 +30,8 @@ export class AuthController {
 
   @Get('/google-callback')
   @UseGuards(GoogleAuthGuard)
-  createOrLoginIfExist(@Request() req: any): Promise<{ accessToken: string }> {
+  @ApiCreatedResponse({ type: tokenDTO })
+  createOrLoginIfExist(@Request() req: any): Promise<tokenDTO> {
     let user = new UserGoogleProfileDTO(req.user);
     return this.authService.createAccountOrGenerateAccessTokenIfExist(user);
   }
@@ -35,7 +42,8 @@ export class AuthController {
 
   @Get('/facebook-callback')
   @UseGuards(FacebookAuthGuard)
-  createFacebookOrLoginIfExist(@Request() req: any) {
+  @ApiCreatedResponse({ type: tokenDTO })
+  createFacebookOrLoginIfExist(@Request() req: any): Promise<tokenDTO> {
     let user = new UserFacebookProfileDTO(req.user);
     return this.authService.createAccountOrGenerateAccessTokenIfExist(user);
   }

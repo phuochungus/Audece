@@ -1,5 +1,6 @@
 import { Type } from '@nestjs/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsMongoId, IsNumber, Min, IsString } from 'class-validator';
 import { Types, mongo, Schema as mongooseSchema } from 'mongoose';
 import { Color } from 'src/colors/schemas/color.schema';
@@ -7,24 +8,30 @@ import { Product } from 'src/products/schemas/product.schema';
 import { Size } from 'src/sizes/schemas/size.schema';
 
 export class ProductCheckoutInfo {
+  @ApiProperty()
   @IsMongoId()
   product: string;
 
+  @ApiProperty()
   @IsMongoId()
   size: string;
 
+  @ApiProperty()
   @IsMongoId()
   color: string;
 
+  @ApiProperty()
   @IsNumber()
   @Min(1)
   quantity: number;
 }
 
 export class DetailCheckoutInfo {
+  @ApiProperty()
   @IsString()
   key: String;
 
+  @ApiProperty()
   @IsString()
   value: String;
 }

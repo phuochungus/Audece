@@ -19,7 +19,9 @@ import { UpdateAddressDTO } from './dto/update-address.dto';
 import SaveVoucherDTO from './dto/save-voucher.dto';
 import { UserDocument } from 'src/auth/strategies/jwt.strategy';
 import ValidateMongoIdPipe from 'src/pipes/validate-mongoId.pipe';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('me')
 @Controller()
 @UseGuards(JWTAuthGuard)
 export class MeController {
