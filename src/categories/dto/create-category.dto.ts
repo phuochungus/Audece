@@ -15,9 +15,10 @@ export class CreateCategoryDto implements Category {
 
   // @IsOptional()
   // @IsMongoId({ each: true })
-  @IsObject({ each: true })
-  @Transform(({ value }) => new Types.ObjectId(value))
-  childCategories: Types.ObjectId[];
+  // @IsObject({ each: true })
+  // @Transform(({ value }) => new Types.ObjectId(value))
+  @IsMongoId({ each: true })
+  childCategories: [];
 
   @IsOptional()
   @IsUrl()
