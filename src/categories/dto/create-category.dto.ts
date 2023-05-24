@@ -13,10 +13,6 @@ export class CreateCategoryDto implements Category {
   @IsString()
   name: string;
 
-  // @IsOptional()
-  // @IsMongoId({ each: true })
-  // @IsObject({ each: true })
-  // @Transform(({ value }) => new Types.ObjectId(value))
   @IsMongoId({ each: true })
   childCategories: [];
 

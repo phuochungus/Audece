@@ -19,8 +19,8 @@ export class CategoriesService {
     return await createdCategory.save();
   }
 
-  async findAll() {
-    return await this.categoryModel
+  async findAll(withImage: boolean) {
+    let categories = this.categoryModel
       .find({})
       .select({
         createdAt: 0,
@@ -31,6 +31,11 @@ export class CategoriesService {
         path: 'childCategories',
         select: { createdAt: 0, updatedAt: 0 },
       });
+    if (withImage == false)
+      categories.select({
+        imageURL: 0,
+      });
+    return await categories;
   }
 
   async findOne(id: string) {
