@@ -1,4 +1,12 @@
-import { Controller, Post, UseGuards, Request, Get, Res } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Request,
+  Get,
+  Res,
+  Query,
+} from '@nestjs/common';
 import LocalAuthGuard from './guards/local-auth.guard';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/google-oauth2.guard';
@@ -8,7 +16,6 @@ import UserFacebookProfileDTO from './dto/user-facebook-profile.dto';
 import { ApiBody, ApiTags, ApiCreatedResponse } from '@nestjs/swagger';
 import { LoginDTO } from './dto/login.dto';
 import { tokenDTO } from './dto/token.dto';
-import { Response } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -27,16 +34,26 @@ export class AuthController {
 
   @Get('/google')
   @UseGuards(GoogleAuthGuard)
-  loginGoogle(@Res() res: Response) {
-    res.sendStatus(301);
-  }
+  loginGoogle(@Res() res) {}
 
   @Get('/google-callback')
   @UseGuards(GoogleAuthGuard)
   @ApiCreatedResponse({ type: tokenDTO })
-  createOrLoginIfExist(@Request() req: any): Promise<tokenDTO> {
+  async createOrLoginIfExist(@Request() req: any, @Res() res) {
     let user = new UserGoogleProfileDTO(req.user);
-    return this.authService.createAccountOrGenerateAccessTokenIfExist(user);
+    const { accessToken } =
+      await this.authService.createAccountOrGenerateAccessTokenIfExist(user);
+    res
+      .status(302)
+      .redirect(
+        'http://localhost:3000/auth/redirect?access_token=' + accessToken,
+      );
+  }
+
+  @Get('/redirect')
+  getAccessToken(@Query('access_token') token: string) {
+    console.log(1);
+    return token;
   }
 
   @Get('/facebook')
@@ -46,8 +63,15 @@ export class AuthController {
   @Get('/facebook-callback')
   @UseGuards(FacebookAuthGuard)
   @ApiCreatedResponse({ type: tokenDTO })
-  createFacebookOrLoginIfExist(@Request() req: any): Promise<tokenDTO> {
+  async createFacebookOrLoginIfExist(@Request() req: any, @Res() res) {
     let user = new UserFacebookProfileDTO(req.user);
-    return this.authService.createAccountOrGenerateAccessTokenIfExist(user);
+    const { accessToken } =
+      await this.authService.createAccountOrGenerateAccessTokenIfExist(user);
+
+    res
+      .status(302)
+      .redirect(
+        'http://localhost:3000/auth/redirect?access_token=' + accessToken,
+      );
   }
 }

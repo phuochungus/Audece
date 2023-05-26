@@ -1,4 +1,3 @@
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import ThirdPartyDTO from './transform-imp';
 import UpdateUserDto from 'src/users/dto/update-user.dto';
 
