@@ -6,10 +6,9 @@ import {
   Patch,
   Param,
   Delete,
-  DefaultValuePipe,
   Query,
   ParseBoolPipe,
-  ParseIntPipe,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -26,7 +25,7 @@ export class CategoriesController {
 
   @Get()
   async findAll(
-    @Query('withImage', ParseBoolPipe)
+    @Query('withImage', new DefaultValuePipe(true), ParseBoolPipe)
     withImage: boolean,
   ) {
     return await this.categoriesService.findAll(withImage);

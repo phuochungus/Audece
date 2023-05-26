@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Request, Get } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Get, Res } from '@nestjs/common';
 import LocalAuthGuard from './guards/local-auth.guard';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/google-oauth2.guard';
@@ -8,6 +8,7 @@ import UserFacebookProfileDTO from './dto/user-facebook-profile.dto';
 import { ApiBody, ApiTags, ApiCreatedResponse } from '@nestjs/swagger';
 import { LoginDTO } from './dto/login.dto';
 import { tokenDTO } from './dto/token.dto';
+import { Response } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -26,7 +27,9 @@ export class AuthController {
 
   @Get('/google')
   @UseGuards(GoogleAuthGuard)
-  loginGoogle() {}
+  loginGoogle(@Res() res: Response) {
+    res.sendStatus(301);
+  }
 
   @Get('/google-callback')
   @UseGuards(GoogleAuthGuard)
