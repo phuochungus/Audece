@@ -3,6 +3,8 @@ import { Types, Schema } from 'mongoose';
 import { UserDocument } from 'src/auth/strategies/jwt.strategy';
 import { OrdersService } from 'src/orders/orders.service';
 import { ProductsService } from 'src/products/products.service';
+import { ProductCheckoutDTO } from './dto/product-checkout.dto';
+import { RemoveProductCheckoutDTO } from './dto/remove-product-checkout.dto';
 
 @Injectable()
 export class MeService {
@@ -73,5 +75,35 @@ export class MeService {
       userDocument.favouriteProducts.splice(index, 1);
       await userDocument.save();
     }
+  }
+  async pushToCart(
+    userDocument: UserDocument,
+    productCheckoutDTO: ProductCheckoutDTO,
+  ) {
+    const products = productCheckoutDTO.productCheckoutInfos.map((e) => {
+      return {
+        color: new Types.ObjectId(e.color),
+        size: new Types.ObjectId(e.size),
+        product: new Types.ObjectId(e.product),
+        quantity: e.quantity,
+      };
+    });
+    userDocument.cart = [...userDocument.cart, ...products];
+    await userDocument.save();
+  }
+
+  async removeFromCart(
+    userDocument: UserDocument,
+    removeProductCheckoutDTO: RemoveProductCheckoutDTO,
+  ) {
+    for (let productId of removeProductCheckoutDTO.productIds) {
+      let itemIndex = userDocument.cart.findIndex(
+        (e) => e.product.toString() == productId,
+      );
+      if (itemIndex > -1) {
+        userDocument.cart.splice(itemIndex, 1);
+      }
+    }
+    await userDocument.save();
   }
 }

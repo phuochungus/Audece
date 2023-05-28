@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types, Schema as mongooseSchema } from 'mongoose';
+import { ObjectId, Types, Schema as mongooseSchema } from 'mongoose';
 import { PercentSaleOffVoucher } from 'src/vouchers/schema/voucher.schema';
 
 export enum gender {
@@ -86,6 +86,24 @@ export class User {
 
   @Prop({ enum: thirdParty, default: null })
   isThirdPartyAccount: thirdParty | null;
+
+  @Prop({
+    type: [
+      {
+        product: { type: mongooseSchema.Types.ObjectId, ref: 'Product' },
+        size: { type: mongooseSchema.Types.ObjectId, ref: 'Size' },
+        color: { type: mongooseSchema.Types.ObjectId, ref: 'Color' },
+        quantity: Number,
+        _id: false,
+      },
+    ],
+  })
+  cart: {
+    product: Types.ObjectId;
+    size: Types.ObjectId;
+    color: Types.ObjectId;
+    quantity: number;
+  }[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

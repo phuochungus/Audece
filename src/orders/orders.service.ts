@@ -70,6 +70,7 @@ export class OrdersService {
     }
 
     try {
+      userDoc.cart = [];
       await Promise.all([order.save(), userDoc.save()]);
       return order;
     } catch (error) {

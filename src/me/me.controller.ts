@@ -20,6 +20,8 @@ import SaveVoucherDTO from './dto/save-voucher.dto';
 import { UserDocument } from 'src/auth/strategies/jwt.strategy';
 import ValidateMongoIdPipe from 'src/pipes/validate-mongoId.pipe';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ProductCheckoutDTO } from './dto/product-checkout.dto';
+import { RemoveProductCheckoutDTO } from './dto/remove-product-checkout.dto';
 
 @ApiTags('me')
 @Controller()
@@ -95,5 +97,21 @@ export class MeController {
     @Body('id', ValidateMongoIdPipe) id: string,
   ) {
     await this.meService.removeFromFavourite(userDocument, id);
+  }
+
+  @Post('/cart')
+  async addToCart(
+    @CurrentUser() userDocument: UserDocument,
+    @Body() productCheckoutDTO: ProductCheckoutDTO,
+  ) {
+    await this.meService.pushToCart(userDocument, productCheckoutDTO);
+  }
+
+  @Delete('/cart')
+  async removeFromCart(
+    @CurrentUser() userDocument: UserDocument,
+    @Body() removeProductCheckoutDTO: RemoveProductCheckoutDTO,
+  ) {
+    await this.meService.removeFromCart(userDocument, removeProductCheckoutDTO);
   }
 }
