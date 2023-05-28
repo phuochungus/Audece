@@ -106,4 +106,20 @@ export class MeService {
     }
     await userDocument.save();
   }
+
+  async updateCart(
+    userDocument: UserDocument,
+    productCheckoutDTO: ProductCheckoutDTO,
+  ) {
+    const products = productCheckoutDTO.productCheckoutInfos.map((e) => {
+      return {
+        color: new Types.ObjectId(e.color),
+        size: new Types.ObjectId(e.size),
+        product: new Types.ObjectId(e.product),
+        quantity: e.quantity,
+      };
+    });
+    userDocument.cart = products;
+    await userDocument.save();
+  }
 }

@@ -114,4 +114,12 @@ export class MeController {
   ) {
     await this.meService.removeFromCart(userDocument, removeProductCheckoutDTO);
   }
+
+  @Patch('/cart')
+  async updateCart(
+    @CurrentUser() userDocument: UserDocument,
+    @Body() productCheckoutDTO: ProductCheckoutDTO,
+  ) {
+    await this.meService.updateCart(userDocument, productCheckoutDTO);
+  }
 }
