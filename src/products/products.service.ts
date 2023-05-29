@@ -113,15 +113,15 @@ export class ProductsService {
 
   async findBestSaleOff(page: number) {
     return await this.productModel.aggregate([
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          imageURL: 1,
-          price: 1,
-          saleOffPrice: 1,
-        },
-      },
+      // {
+      //   $project: {
+      //     _id: 1,
+      //     name: 1,
+      //     imageURL: 1,
+      //     price: 1,
+      //     saleOffPrice: 1,
+      //   },
+      // },
       {
         $addFields: {
           percentSaleOff: {
