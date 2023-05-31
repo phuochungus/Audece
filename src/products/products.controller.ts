@@ -19,6 +19,7 @@ import JWTAuthGuard from 'src/auth/guards/jwt-auth.guard';
 import { MarkUserFavouriteProductsInterceptor } from 'src/interceptors/mark-user-favourite-products.interceptor';
 import QueryProductWithFilterDTO from './dto/query-product-with-filter.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { query } from 'express';
 
 @Controller('products')
 export class ProductsController {
@@ -79,12 +80,8 @@ export class ProductsController {
   @UseGuards(JWTAuthGuard)
   @UseInterceptors(MarkUserFavouriteProductsInterceptor)
   async getProductByFilter(
-    @Body() queryProductWithFilterDto: QueryProductWithFilterDTO,
-    @Query('page', new DefaultValuePipe(0), ParseIntPipe) page: number,
+    @Query() queryProductWithFilterDto: QueryProductWithFilterDTO,
   ) {
-    return await this.productsService.findWithFilter(
-      queryProductWithFilterDto,
-      page,
-    );
+    return await this.productsService.findWithFilter(queryProductWithFilterDto);
   }
 }

@@ -139,10 +139,8 @@ export class ProductsService {
     ]);
   }
 
-  async findWithFilter(
-    queryProductWithFilterDto: QueryProductWithFilterDTO,
-    page: number,
-  ) {
+  async findWithFilter(queryProductWithFilterDto: QueryProductWithFilterDTO) {
+    const page = queryProductWithFilterDto.page;
     let aggregateArray = [
       {
         $match: {

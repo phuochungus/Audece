@@ -1,4 +1,5 @@
-import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export default class QueryProductWithFilterDTO {
   @IsString()
@@ -7,9 +8,16 @@ export default class QueryProductWithFilterDTO {
 
   @IsNumber()
   @Min(0)
+  @Type(() => Number)
   min: number;
 
   @IsNumber()
   @Min(0)
+  @Type(() => Number)
   max: number;
+
+  @IsInt()
+  @Type(() => Number)
+  @Min(0)
+  page: number;
 }
