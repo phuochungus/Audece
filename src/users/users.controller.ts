@@ -4,11 +4,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('user')
-@Controller('users')
+@Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
+  @Post('/')
   async create(@Body() createUserDto: CreateUserDto) {
     await this.usersService.create(createUserDto);
   }
