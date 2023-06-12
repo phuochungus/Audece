@@ -21,4 +21,8 @@ export class SizesService {
   findAll() {
     return this.sizeModel.find().sort({ lable: -1 });
   }
+
+  async findOne(id: string) {
+    return await this.sizeModel.findById(id);
+  }
 }
