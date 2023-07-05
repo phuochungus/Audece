@@ -84,4 +84,9 @@ export class ProductsController {
   ) {
     return await this.productsService.findWithFilter(queryProductWithFilterDto);
   }
+
+  @Post('/search')
+  async search(@Body('query') queryString: string) {
+    return await this.productsService.search(queryString);
+  }
 }

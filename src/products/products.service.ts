@@ -85,15 +85,6 @@ export class ProductsService {
 
   async findBestSellers(page: number) {
     return await this.productModel.aggregate([
-      // {
-      //   $project: {
-      //     _id: 1,
-      //     name: 1,
-      //     imageURL: 1,
-      //     price: 1,
-      //     saleOffPrice: 1,
-      //   },
-      // },
       {
         $addFields: {
           isFavourite: false,
@@ -113,15 +104,6 @@ export class ProductsService {
 
   async findBestSaleOff(page: number) {
     return await this.productModel.aggregate([
-      // {
-      //   $project: {
-      //     _id: 1,
-      //     name: 1,
-      //     imageURL: 1,
-      //     price: 1,
-      //     saleOffPrice: 1,
-      //   },
-      // },
       {
         $addFields: {
           percentSaleOff: {
@@ -182,5 +164,13 @@ export class ProductsService {
     const product = await this.productModel.findOne({ _id: id }).lean();
 
     return { product, quantity };
+  }
+
+  async search(queryString: string) {
+    const result = await this.productModel.find({
+      name: new RegExp(queryString),
+    });
+
+    return result;
   }
 }
