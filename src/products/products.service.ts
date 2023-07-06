@@ -96,9 +96,9 @@ export class ProductsService {
         },
       },
       {
-        $skip: 15 * page,
+        $skip: 10 * page,
       },
-      { $limit: 15 },
+      { $limit: 10 },
     ]);
   }
 
@@ -115,9 +115,9 @@ export class ProductsService {
         $sort: { pecentSaleOff: -1 },
       },
       {
-        $skip: 15 * page,
+        $skip: 10 * page,
       },
-      { $limit: 15 },
+      { $limit: 10 },
     ]);
   }
 
@@ -147,9 +147,9 @@ export class ProductsService {
         : []),
 
       {
-        $skip: 15 * page,
+        $skip: 10 * page,
       },
-      { $limit: 15 },
+      { $limit: 10 },
     ];
     return await this.productModel.aggregate(aggregateArray);
   }
