@@ -56,7 +56,7 @@ export class ProductsService {
       .populate({
         path: 'colors',
         select: {
-          _id: 0,
+          _id: 1,
           name: 1,
           hex: 1,
         },
