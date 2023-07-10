@@ -64,7 +64,7 @@ export class ProductsService {
       .populate({
         path: 'sizes',
         select: {
-          _id: 0,
+          _id: 1,
           widthInCentimeter: 1,
           heightInCentimeter: 1,
           lable: 1,
