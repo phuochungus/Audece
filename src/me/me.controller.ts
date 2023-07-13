@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { MeService } from './me.service';
 import JWTAuthGuard from 'src/auth/guards/jwt-auth.guard';
@@ -22,6 +23,7 @@ import ValidateMongoIdPipe from 'src/pipes/validate-mongoId.pipe';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProductCheckoutDTO } from './dto/product-checkout.dto';
 import { RemoveProductCheckoutDTO } from './dto/remove-product-checkout.dto';
+import { UpsertFavouriteProductDto } from './dto/create-favourite-product.dto';
 
 @ApiTags('me')
 @Controller()
@@ -83,12 +85,16 @@ export class MeController {
   async showFavourites(@CurrentUser() userDocument: UserDocument) {
     return await this.meService.showFavourite(userDocument);
   }
-  @Post('/favourites')
+
+  @Put('/favourites')
   async saveToFavourites(
     @CurrentUser() userDocument: UserDocument,
-    @Body('id', ValidateMongoIdPipe) id: string,
+    @Body() createFavouriteProductDto: UpsertFavouriteProductDto,
   ) {
-    await this.meService.saveFavourites(userDocument, id);
+    await this.meService.upsertFavourites(
+      userDocument,
+      createFavouriteProductDto,
+    );
   }
 
   @Delete('/favourites')

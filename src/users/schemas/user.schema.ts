@@ -57,8 +57,23 @@ export class User {
   })
   vouchers: UserVoucherInfo[];
 
-  @Prop({ type: [{ type: mongooseSchema.Types.ObjectId, ref: 'Product' }] })
-  favouriteProducts: Types.ObjectId[];
+  @Prop({
+    type: [
+      {
+        product: { type: mongooseSchema.Types.ObjectId, ref: 'Product' },
+        size: { type: mongooseSchema.Types.ObjectId, ref: 'Size' },
+        color: { type: mongooseSchema.Types.ObjectId, ref: 'Color' },
+        quantity: Number,
+        _id: false,
+      },
+    ],
+  })
+  favouriteProducts: {
+    product: ObjectId;
+    size: ObjectId;
+    color: ObjectId;
+    quantity: number;
+  }[];
 
   @Prop({
     type: [

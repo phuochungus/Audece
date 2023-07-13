@@ -5,6 +5,7 @@ import { OrdersService } from 'src/orders/orders.service';
 import { ProductsService } from 'src/products/products.service';
 import { ProductCheckoutDTO } from './dto/product-checkout.dto';
 import { RemoveProductCheckoutDTO } from './dto/remove-product-checkout.dto';
+import { UpsertFavouriteProductDto } from './dto/create-favourite-product.dto';
 
 @Injectable()
 export class MeService {
@@ -31,10 +32,22 @@ export class MeService {
   }
 
   async showFavourite(userDocument: UserDocument) {
-    const products = userDocument.favouriteProducts;
-    return await this.productsService.productModel
-      .find({ _id: { $in: products } })
-      .lean();
+    await Promise.all([
+      userDocument.populate({
+        path: 'favouriteProducts',
+        populate: { path: 'product' },
+      }),
+      userDocument.populate({
+        path: 'favouriteProducts',
+        populate: { path: 'size' },
+      }),
+      userDocument.populate({
+        path: 'favouriteProducts',
+        populate: { path: 'color' },
+      }),
+    ]);
+
+    return userDocument.favouriteProducts;
   }
 
   async showHistory(userDocument: UserDocument) {
@@ -56,26 +69,35 @@ export class MeService {
     return userDocument.purchaseHistory;
   }
 
-  async saveFavourites(userDoc: UserDocument, id: string) {
-    if (
-      userDoc.favouriteProducts.some((e) => {
-        return e._id.toString() == id;
-      })
-    )
-      return;
-    userDoc.favouriteProducts.push(new Types.ObjectId(id));
+  async upsertFavourites(
+    userDoc: UserDocument,
+    upsertFavouriteProductDto: UpsertFavouriteProductDto,
+  ) {
+    let index = userDoc.favouriteProducts.findIndex(
+      (e) =>
+        e.product == upsertFavouriteProductDto.product &&
+        e.color == upsertFavouriteProductDto.color &&
+        e.size == upsertFavouriteProductDto.size,
+    );
+    if (index > -1) {
+      userDoc.favouriteProducts[index].quantity =
+        upsertFavouriteProductDto.quantity;
+      return await userDoc.save();
+    }
+    userDoc.favouriteProducts.push(upsertFavouriteProductDto);
     return await userDoc.save();
   }
 
   async removeFromFavourite(userDocument: UserDocument, id: string) {
     let index = userDocument.favouriteProducts.findIndex(
-      (e) => e._id.toString() == id,
+      (e) => e.product.toString() == id,
     );
     if (index > -1) {
       userDocument.favouriteProducts.splice(index, 1);
       await userDocument.save();
     }
   }
+
   async pushToCart(
     userDocument: UserDocument,
     productCheckoutDTO: ProductCheckoutDTO,
