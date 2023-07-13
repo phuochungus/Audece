@@ -105,9 +105,16 @@ export class ProductsService {
   async findBestSaleOff(page: number) {
     return await this.productModel.aggregate([
       {
+        $match: {
+          $expr: {
+            $ne: ['$currentPrice', '$stablePrice'],
+          },
+        },
+      },
+      {
         $addFields: {
           percentSaleOff: {
-            $subtract: [1, { $divide: ['$saleOffPrice', '$price'] }],
+            $subtract: [1, { $divide: ['$currentPrice', '$stablePrice'] }],
           },
         },
       },
