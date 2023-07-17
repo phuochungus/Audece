@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types, Schema as mongooseSchema } from 'mongoose';
+import { Document, ObjectId, Types, Schema as mongooseSchema } from 'mongoose';
 
 export type ProductDocument = Product & Document;
 
@@ -24,10 +24,10 @@ export class Product {
   categories: Types.ObjectId[];
 
   @Prop({ type: [{ type: mongooseSchema.Types.ObjectId, ref: 'Color' }] })
-  colors: Types.ObjectId[];
+  colors: ObjectId[];
 
   @Prop({ type: [{ type: mongooseSchema.Types.ObjectId, ref: 'Size' }] })
-  sizes: Types.ObjectId[];
+  sizes: ObjectId[];
 
   @Prop()
   stablePrice: number;

@@ -84,7 +84,19 @@ export class MeService {
         upsertFavouriteProductDto.quantity;
       return await userDoc.save();
     }
-    userDoc.favouriteProducts.push(upsertFavouriteProductDto);
+    if (!(upsertFavouriteProductDto.color && upsertFavouriteProductDto.size)) {
+      let product = await this.productsService.findOne(
+        upsertFavouriteProductDto.product.toString(),
+      );
+      upsertFavouriteProductDto.color = product.colors[0];
+      upsertFavouriteProductDto.size = product.colors[0];
+      userDoc.favouriteProducts.push({
+        product: upsertFavouriteProductDto.product,
+        color: product.colors[0],
+        size: product.sizes[0],
+        quantity: upsertFavouriteProductDto.quantity,
+      });
+    }
     return await userDoc.save();
   }
 
