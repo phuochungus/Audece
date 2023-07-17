@@ -1,17 +1,16 @@
 import { IsInt, IsMongoId, IsOptional } from 'class-validator';
-import { ObjectId } from 'mongoose';
 
 export class UpsertFavouriteProductDto {
   @IsMongoId()
-  product: ObjectId;
+  product: string;
 
   @IsOptional()
   @IsMongoId()
-  color?: ObjectId;
+  color?: string;
 
   @IsOptional()
   @IsMongoId()
-  size?: ObjectId;
+  size?: string;
 
   @IsInt()
   quantity: number;

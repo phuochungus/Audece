@@ -69,9 +69,9 @@ export class User {
     ],
   })
   favouriteProducts: {
-    product: ObjectId;
-    size: ObjectId;
-    color: ObjectId;
+    product: Types.ObjectId;
+    size: Types.ObjectId;
+    color: Types.ObjectId;
     quantity: number;
   }[];
 

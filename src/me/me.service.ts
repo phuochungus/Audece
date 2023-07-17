@@ -75,9 +75,11 @@ export class MeService {
   ) {
     let index = userDoc.favouriteProducts.findIndex(
       (e) =>
-        e.product == upsertFavouriteProductDto.product &&
-        e.color == upsertFavouriteProductDto.color &&
-        e.size == upsertFavouriteProductDto.size,
+        e.product._id.toString() == upsertFavouriteProductDto.product &&
+        (e.color._id.toString() == upsertFavouriteProductDto.color ||
+          !upsertFavouriteProductDto.color) &&
+        (e.size._id.toString() == upsertFavouriteProductDto.size ||
+          !upsertFavouriteProductDto.size),
     );
     if (index > -1) {
       userDoc.favouriteProducts[index].quantity =
@@ -88,10 +90,10 @@ export class MeService {
       let product = await this.productsService.findOne(
         upsertFavouriteProductDto.product.toString(),
       );
-      upsertFavouriteProductDto.color = product.colors[0];
-      upsertFavouriteProductDto.size = product.colors[0];
+      upsertFavouriteProductDto.color = product.colors[0]._id.toString();
+      upsertFavouriteProductDto.size = product.colors[0]._id.toString();
       userDoc.favouriteProducts.push({
-        product: upsertFavouriteProductDto.product,
+        product: new Types.ObjectId(upsertFavouriteProductDto.product),
         color: product.colors[0],
         size: product.sizes[0],
         quantity: upsertFavouriteProductDto.quantity,
@@ -102,7 +104,7 @@ export class MeService {
 
   async removeFromFavourite(userDocument: UserDocument, id: string) {
     let index = userDocument.favouriteProducts.findIndex(
-      (e) => e.product.toString() == id,
+      (e) => e.product._id.toString() == id,
     );
     if (index > -1) {
       userDocument.favouriteProducts.splice(index, 1);

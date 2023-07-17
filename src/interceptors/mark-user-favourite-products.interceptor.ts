@@ -11,7 +11,7 @@ export class MarkUserFavouriteProductsInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler) {
     let req = context.switchToHttp().getRequest();
     const favouriteProducts = req.user.favouriteProducts.map((e) => {
-      return e.product;
+      return e.product._id.toString();
     });
 
     return next
