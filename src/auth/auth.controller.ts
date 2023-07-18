@@ -46,7 +46,7 @@ export class AuthController {
     res
       .status(302)
       .redirect(
-        'http://localhost:3000/auth/redirect?access_token=' + accessToken,
+        'audace://home?access_token=' + accessToken,
       );
   }
 
@@ -71,7 +71,7 @@ export class AuthController {
     res
       .status(302)
       .redirect(
-        'http://localhost:3000/auth/redirect?access_token=' + accessToken,
+        'audace://home?access_token=' + accessToken,
       );
   }
 }
