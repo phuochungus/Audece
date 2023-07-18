@@ -13,5 +13,5 @@ export class CreateSizeDto implements Size {
 
   @ApiProperty()
   @IsString()
-  lable: string;
+  label: string;
 }

@@ -9,7 +9,7 @@ export class Size {
   heightInCentimeter: number;
 
   @Prop({ required: true })
-  lable: string;
+  label: string;
 }
 
 export const SizeSchema = SchemaFactory.createForClass(Size);

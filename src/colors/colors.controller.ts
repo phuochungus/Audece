@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  ConflictException,
+  BadGatewayException,
 } from '@nestjs/common';
 import { ColorsService } from './colors.service';
 import { CreateColorDto } from './dto/create-color.dto';
@@ -18,8 +20,14 @@ export class ColorsController {
   constructor(private readonly colorsService: ColorsService) {}
 
   @Post()
-  create(@Body() createColorDto: CreateColorDto) {
-    return this.colorsService.create(createColorDto);
+  async create(@Body() createColorDto: CreateColorDto) {
+    try {
+      return await this.colorsService.create(createColorDto);
+    } catch (error) {
+      if (error.code == 11000)
+        throw new ConflictException('name, hex already existed');
+      throw new BadGatewayException();
+    }
   }
 
   @Get()
