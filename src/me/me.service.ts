@@ -10,6 +10,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../users/schemas/user.schema';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 import { assign } from 'lodash';
+import { RemoveFavourte } from './dto/remove-favourite-product.dto';
 
 @Injectable()
 export class MeService {
@@ -126,9 +127,16 @@ export class MeService {
     return await userDoc.save();
   }
 
-  async removeFromFavourite(userDocument: UserDocument, id: string) {
+  async removeFromFavourite(
+    userDocument: UserDocument,
+    removeDto: RemoveFavourte,
+  ) {
     let index = userDocument.favouriteProducts.findIndex(
-      (e) => e.product._id.toString() == id,
+      (e) =>
+        e.product._id.toString() == removeDto.product &&
+        e.color._id.toString() == removeDto.color &&
+        e.size._id.toString() == removeDto.size &&
+        e.quantity == removeDto.quantity,
     );
     if (index > -1) {
       userDocument.favouriteProducts.splice(index, 1);

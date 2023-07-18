@@ -23,12 +23,11 @@ import { UsersService } from 'src/users/users.service';
 import { UpdateAddressDTO } from './dto/update-address.dto';
 import SaveVoucherDTO from './dto/save-voucher.dto';
 import { UserDocument } from 'src/auth/strategies/jwt.strategy';
-import ValidateMongoIdPipe from 'src/pipes/validate-mongoId.pipe';
 import { ApiTags } from '@nestjs/swagger';
 import { ProductCheckoutDTO } from './dto/product-checkout.dto';
 import { RemoveProductCheckoutDTO } from './dto/remove-product-checkout.dto';
 import { UpsertFavouriteProductDto } from './dto/create-favourite-product.dto';
-import { ConfigModule } from '@nestjs/config';
+import { RemoveFavourte } from './dto/remove-favourite-product.dto';
 
 @ApiTags('me')
 @Controller()
@@ -122,9 +121,9 @@ export class MeController {
   @Delete('/favourites')
   async removeFromFavourites(
     @CurrentUser() userDocument: UserDocument,
-    @Body('id', ValidateMongoIdPipe) id: string,
+    @Body() deleteFavouriteDto: RemoveFavourte,
   ) {
-    await this.meService.removeFromFavourite(userDocument, id);
+    await this.meService.removeFromFavourite(userDocument, deleteFavouriteDto);
   }
 
   @Post('/cart')
