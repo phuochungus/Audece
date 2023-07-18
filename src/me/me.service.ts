@@ -1,17 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { Types, Schema } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { UserDocument } from 'src/auth/strategies/jwt.strategy';
 import { OrdersService } from 'src/orders/orders.service';
 import { ProductsService } from 'src/products/products.service';
 import { ProductCheckoutDTO } from './dto/product-checkout.dto';
 import { RemoveProductCheckoutDTO } from './dto/remove-product-checkout.dto';
 import { UpsertFavouriteProductDto } from './dto/create-favourite-product.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from '../users/schemas/user.schema';
+import { UpdateUserDto } from '../users/dto/update-user.dto';
+import { assign } from 'lodash';
 
 @Injectable()
 export class MeService {
   constructor(
     private readonly ordersService: OrdersService,
     private readonly productsService: ProductsService,
+    @InjectModel(User.name)
+    public readonly userModel: Model<User>,
   ) {}
 
   async showVouchers(userDoc: UserDocument) {
@@ -29,6 +35,24 @@ export class MeService {
       .find({ _id: { $in: orders } })
       .sort({ createdAt: -1 })
       .lean();
+  }
+
+  async updateSelfProfile(
+    userDocument: UserDocument,
+    updateUserDto: UpdateUserDto,
+  ) {
+    // const selfId = userDocument.id;
+
+    // await this.userModel.updateOne(
+    //   {
+    //     id: selfId,
+    //   },
+    //   updateUserDto,
+    // );
+    assign(userDocument, updateUserDto);
+    console.log(userDocument);
+    console.log(updateUserDto);
+    return await userDocument.save();
   }
 
   async showFavourite(userDocument: UserDocument) {

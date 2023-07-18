@@ -1,5 +1,5 @@
 import ThirdPartyDTO from './transform-imp';
-import UpdateUserDto from 'src/users/dto/update-user.dto';
+import FullUpdateUserDto from 'src/users/dto/update-user.dto';
 
 export default class UserGoogleProfileDTO extends ThirdPartyDTO {
   name: string;
@@ -25,8 +25,8 @@ export default class UserGoogleProfileDTO extends ThirdPartyDTO {
     };
   }
 
-  makeCreateUserDto(): UpdateUserDto {
-    let dto = new UpdateUserDto();
+  makeCreateUserDto(): FullUpdateUserDto {
+    let dto = new FullUpdateUserDto();
     dto.email = this.email;
     dto.fullname = this.name;
     dto.imageURL = this.picture;

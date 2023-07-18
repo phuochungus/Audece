@@ -12,7 +12,7 @@ import { compareSync, hashSync } from 'bcrypt';
 import { FlattenMaps, Model, Types } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import UpdateUserDto from './dto/update-user.dto';
+import FullUpdateUserDto from './dto/update-user.dto';
 import { extend } from 'lodash';
 import { UpdateAddressDTO } from 'src/me/dto/update-address.dto';
 import SaveVoucherDTO from 'src/me/dto/save-voucher.dto';
@@ -110,7 +110,7 @@ export class UsersService {
 
   async updateUserInfo(
     userDocument: UserDocument,
-    updateUserDto: UpdateUserDto,
+    updateUserDto: FullUpdateUserDto,
   ) {
     extend(userDocument, updateUserDto);
     await userDocument.save();

@@ -1,4 +1,4 @@
-import UpdateUserDto from 'src/users/dto/update-user.dto';
+import FullUpdateUserDto from 'src/users/dto/update-user.dto';
 import ThirdPartyDTO from './transform-imp';
 
 type dto = {
@@ -28,8 +28,8 @@ export default class UserFacebookProfileDTO extends ThirdPartyDTO {
     this.gender = user.gender;
   }
 
-  makeCreateUserDto(): UpdateUserDto {
-    let dto = new UpdateUserDto();
+  makeCreateUserDto(): FullUpdateUserDto {
+    let dto = new FullUpdateUserDto();
     dto.birth = new Date(this.birthday);
     dto.email = this.email;
     dto.fullname = this.name;

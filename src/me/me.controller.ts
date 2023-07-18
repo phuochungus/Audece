@@ -10,20 +10,25 @@ import {
   DefaultValuePipe,
   Delete,
   Put,
+  ConflictException,
+  BadGatewayException,
 } from '@nestjs/common';
 import { MeService } from './me.service';
 import JWTAuthGuard from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
-import UpdateUserDto from 'src/users/dto/update-user.dto';
+import FullUpdateUserDto, {
+  UpdateUserDto,
+} from 'src/users/dto/update-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { UpdateAddressDTO } from './dto/update-address.dto';
 import SaveVoucherDTO from './dto/save-voucher.dto';
 import { UserDocument } from 'src/auth/strategies/jwt.strategy';
 import ValidateMongoIdPipe from 'src/pipes/validate-mongoId.pipe';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { ProductCheckoutDTO } from './dto/product-checkout.dto';
 import { RemoveProductCheckoutDTO } from './dto/remove-product-checkout.dto';
 import { UpsertFavouriteProductDto } from './dto/create-favourite-product.dto';
+import { ConfigModule } from '@nestjs/config';
 
 @ApiTags('me')
 @Controller()
@@ -37,6 +42,23 @@ export class MeController {
   @Get('/profile')
   async showProfile(@CurrentUser() userDocument: UserDocument) {
     return userDocument;
+  }
+
+  @Patch('/profile')
+  async updateProfile(
+    @CurrentUser() userDocument: UserDocument,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    try {
+      return await this.meService.updateSelfProfile(
+        userDocument,
+        updateUserDto,
+      );
+    } catch (error) {
+      if (error.code == 11000)
+        throw new ConflictException('email already taken');
+      throw new BadGatewayException();
+    }
   }
 
   @Get('/vouchers')
@@ -60,7 +82,7 @@ export class MeController {
   @Patch()
   async update(
     @CurrentUser() userDocument: UserDocument,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: FullUpdateUserDto,
   ) {
     await this.usersService.updateUserInfo(userDocument, updateUserDto);
   }
