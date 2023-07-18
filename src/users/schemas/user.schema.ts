@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ObjectId, Types, Schema as mongooseSchema } from 'mongoose';
+import { Types, Schema as mongooseSchema } from 'mongoose';
 import { PercentSaleOffVoucher } from 'src/vouchers/schema/voucher.schema';
 
 export enum gender {

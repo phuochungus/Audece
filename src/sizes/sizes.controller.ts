@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ConflictException,
+  BadGatewayException,
+} from '@nestjs/common';
 import { SizesService } from './sizes.service';
 import { CreateSizeDto } from './dto/create-size.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -9,8 +17,14 @@ export class SizesController {
   constructor(private readonly sizesService: SizesService) {}
 
   @Post()
-  create(@Body() createSizeDto: CreateSizeDto) {
-    return this.sizesService.create(createSizeDto);
+  async create(@Body() createSizeDto: CreateSizeDto) {
+    try {
+      return await this.sizesService.create(createSizeDto);
+    } catch (error) {
+      if (error.code == 11000)
+        throw new ConflictException('heigh and width already defined');
+      throw new BadGatewayException();
+    }
   }
 
   @Get()
