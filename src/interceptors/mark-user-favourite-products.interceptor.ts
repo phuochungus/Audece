@@ -27,7 +27,7 @@ export class MarkUserFavouriteProductsInterceptor implements NestInterceptor {
       for (let index in dataResponse)
         this.checkAndMarkFavourite(dataResponse[index], favouriteProductIds);
     } else if (typeof dataResponse === 'object') {
-      if (dataResponse.products.constructor === Array) {
+      if (dataResponse.products) {
         for (let index in dataResponse.products) {
           // console.log(dataResponse.products[index]);
           this.checkAndMarkFavourite(
