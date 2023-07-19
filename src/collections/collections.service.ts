@@ -38,7 +38,7 @@ export class CollectionsService {
     return await this.collectionModel
       .findOne({ _id: id })
       .sort({ createdAt: -1 })
-      .populate({ path: 'productIds' })
+      .populate({ path: 'products' })
       .lean();
   }
 }
