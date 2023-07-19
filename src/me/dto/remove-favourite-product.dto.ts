@@ -1,15 +1,18 @@
-import { IsInt, IsMongoId } from 'class-validator';
+import { IsInt, IsMongoId, IsOptional } from 'class-validator';
 
 export class RemoveFavourte {
   @IsMongoId()
   product: string;
 
+  @IsOptional()
   @IsMongoId()
-  size: string;
-  
-  @IsMongoId()
-  color: string;
+  size?: string;
 
+  @IsOptional()
+  @IsMongoId()
+  color?: string;
+
+  @IsOptional()
   @IsInt()
-  quantity: number;
+  quantity?: number;
 }

@@ -131,13 +131,20 @@ export class MeService {
     userDocument: UserDocument,
     removeDto: RemoveFavourte,
   ) {
-    let index = userDocument.favouriteProducts.findIndex(
-      (e) =>
-        e.product._id.toString() == removeDto.product &&
-        e.color._id.toString() == removeDto.color &&
-        e.size._id.toString() == removeDto.size &&
-        e.quantity == removeDto.quantity,
-    );
+    let index: number;
+    if (removeDto.color && removeDto.quantity && removeDto.size) {
+      index = userDocument.favouriteProducts.findIndex(
+        (e) =>
+          e.product._id.toString() == removeDto.product &&
+          e.color._id.toString() == removeDto.color &&
+          e.size._id.toString() == removeDto.size &&
+          e.quantity == removeDto.quantity,
+      );
+    } else {
+      index = userDocument.favouriteProducts.findIndex(
+        (e) => e.product._id.toString() == removeDto.product,
+      );
+    }
     if (index > -1) {
       userDocument.favouriteProducts.splice(index, 1);
       await userDocument.save();
