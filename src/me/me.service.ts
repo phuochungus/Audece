@@ -51,8 +51,8 @@ export class MeService {
     //   updateUserDto,
     // );
     assign(userDocument, updateUserDto);
-    console.log(userDocument);
-    console.log(updateUserDto);
+    // console.log(userDocument);
+    // console.log(updateUserDto);
     return await userDocument.save();
   }
 

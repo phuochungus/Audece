@@ -41,7 +41,7 @@ export class MarkUserFavouriteProductsInterceptor implements NestInterceptor {
   }
 
   private checkAndMarkFavourite(productItem: any, favouriteProductIds: any[]) {
-    console.log(productItem)
+    // console.log(productItem)
     const _id: string = productItem._id.toString();
     if (favouriteProductIds.includes(_id)) productItem.isFavourite = true;
     else productItem.isFavourite = false;

@@ -52,7 +52,7 @@ export class AuthController {
 
   @Get('/redirect')
   getAccessToken(@Query('access_token') token: string) {
-    console.log(1);
+    // console.log(1);
     return token;
   }
 
