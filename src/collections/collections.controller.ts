@@ -29,9 +29,9 @@ export class CollectionsController {
     return await this.collectionsService.findAll();
   }
 
+  @UseInterceptors(MarkUserFavouriteProductsInterceptor)
   @Get('/collection/:id')
   @UseGuards(JWTAuthGuard)
-  @UseInterceptors(MarkUserFavouriteProductsInterceptor)
   findOne(@Param('id', ObjectIdStringValidationPipe) id: string) {
     return this.collectionsService.findOne(id);
   }

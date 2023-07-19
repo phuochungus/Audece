@@ -26,13 +26,22 @@ export class MarkUserFavouriteProductsInterceptor implements NestInterceptor {
     if (dataResponse.constructor === Array) {
       for (let index in dataResponse)
         this.checkAndMarkFavourite(dataResponse[index], favouriteProductIds);
-    } else {
-      this.checkAndMarkFavourite(dataResponse, favouriteProductIds);
+    } else if (typeof dataResponse === 'object') {
+      if (dataResponse.products.constructor === Array) {
+        for (let index in dataResponse.products) {
+          // console.log(dataResponse.products[index]);
+          this.checkAndMarkFavourite(
+            dataResponse.products[index],
+            favouriteProductIds,
+          );
+        }
+      } else this.checkAndMarkFavourite(dataResponse, favouriteProductIds);
     }
     return dataResponse;
   }
 
   private checkAndMarkFavourite(productItem: any, favouriteProductIds: any[]) {
+    console.log(productItem)
     const _id: string = productItem._id.toString();
     if (favouriteProductIds.includes(_id)) productItem.isFavourite = true;
     else productItem.isFavourite = false;
